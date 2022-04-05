@@ -16,7 +16,8 @@ import AdScreen from './screens/AdScreen/AdScreen';
 
 function App() {
   const [search, setSearch] = useState("");
-  console.log(search);
+  const [notification, setNotification] = useState([]);
+  // console.log(search);
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
   return (
@@ -25,10 +26,22 @@ function App() {
       <Route path='/' component={LandingPage} exact/>
       <Route path='/login' component={LoginScreen} />
       <Route path='/register' component={RegisterScreen} />
-      <Route path='/home' component={HomeScreen} />
+      {/* <Route path='/home' component={HomeScreen} /> */}
       <Route path='/myads' component={MyAds} />
-       <Route path='/createad' component={CreateAd} />
+      <Route path='/createad' component={CreateAd} />
       <Route path='/ad/:id' component={AdScreen} />
+      <Route
+        path="/home"
+        component={({ history }) => (
+          <HomeScreen search={search} history={history} />
+        )}
+      />
+      {/* <Route
+        path="/mynotes"
+        component={({ history }) => (
+          <MyNotes search={search} history={history} />
+        )}
+      /> */}
       <Route path='/updatead/:id' component={UpdateAd} />
       <Route path='/profile' component={ProfileScreen} />
       <Footer />

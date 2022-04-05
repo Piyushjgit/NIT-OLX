@@ -35,13 +35,13 @@ const SingleAd = ({ ad }) => {
                                     </div>)
                                 }
                             </Card.Title>
-                            <Card.Subtitle className="mb-2 text-muted">{ad.price}</Card.Subtitle>
+                            <Card.Subtitle className="mb-2 font-weight-bold">₹{ad.price}</Card.Subtitle>
                             <Card.Text>
-                                {ad.description}
+                                {ad.description.length > 25 ? ad.description.substr(0, 25) : ad.description}
                             </Card.Text>
                             {ad?.buyer ?
                                 (
-                                    <Badge bg="success" text='light'>Sold to - {ad?.buyer?.name}</Badge>
+                                    <Button variant="outline-success" disabled>Sold to - {ad?.buyer?.name}</Button>
                                 ) :
                                 (<Link to={`ad/${ad._id}`}><Button variant="danger">
                                     {(ad?.seller?._id === userInfo._id) ? "View" : "Buy"}

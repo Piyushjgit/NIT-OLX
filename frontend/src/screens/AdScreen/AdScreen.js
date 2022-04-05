@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Container, Card, Button, OverlayTrigger, Popover, DropdownButton, Dropdown, Alert, Col, Row, Image } from 'react-bootstrap'
+import { Container, Card, Button, OverlayTrigger, Popover, DropdownButton, Dropdown, Alert, Col, Row, Image, NavDropdown, Badge } from 'react-bootstrap'
 import { AiFillEdit, AiFillDelete, AiFillCheckCircle, AiFillCloseCircle } from 'react-icons/ai';
 import { useSelector, useDispatch } from 'react-redux';
 import { Link, useHistory } from 'react-router-dom';
@@ -9,6 +9,8 @@ import axios from 'axios';
 import Loading from '../../components/Loading';
 import ErrorMessage from '../../components/ErrorMessage';
 import { AD_UPDATE_SUCCESS, AD_UPDATE_FAIL, AD_LIST_SUCCESS } from '../../constants/adsConstant';
+import { io } from "socket.io-client";
+import NotificationBadge, { Effect } from 'react-notification-badge';
 const AdScreen = ({ match }) => {
     const userLogin = useSelector((state) => state.userLogin);
     const { userInfo } = userLogin;
@@ -18,7 +20,21 @@ const AdScreen = ({ match }) => {
     const { loading, ads, error } = singleAd;
     const [errMessage, setErrMessage] = useState('');
     const url = "https://wa.me/91"
-    // console.log(userInfo);
+    // const [socket, setSocket] = useState(null);
+    // const [notification, setNotification] = useState([]);
+    // useEffect(() => {
+    //     setSocket(io("http://localhost:5000"));
+    // }, []);
+    // useEffect(() => {
+    //     socket?.emit("setup", userInfo);
+    // }, [socket, userInfo])
+    // useEffect(() => {
+    //     socket?.on("request received", (newRequest) => {
+    //         if (!notification.includes(newRequest)) {
+    //             setNotification([newRequest, ...notification]);
+    //         }
+    //     })
+    // });
     useEffect(() => {
         if (!userInfo) {
             history.push('/');
@@ -41,7 +57,11 @@ const AdScreen = ({ match }) => {
                 },
             };
             const { data } = await axios.post(`/api/ads/${match.params.id}/buyrequest`, {}, config);
-            // dispatch({ type: AD_LIST_SUCCESS, payload: ads });
+            // socket.emit('new request', data);
+            // socket.emit('new request',{
+            //     senderName:userInfo.name,
+            //     product:data.title
+            // });
             setErrMessage('Request Sent');
             // history.push('/home');
             // console.log(data);
@@ -78,6 +98,27 @@ const AdScreen = ({ match }) => {
     }
     return (
         <Container className='mt-5'>
+            {/* <NotificationBadge
+                count={notification?.length}
+                effect={Effect.SCALE}
+            />
+            <NavDropdown title={'Bell'} id="basic-nav-dropdown">
+                {
+                    !(notification?.length) && <NavDropdown.Item>No New Messages</NavDropdown.Item>
+                }
+                {
+                    notification?.map((noti) => (
+                        <NavDropdown.Item key={noti._id}
+                            onClick={() => {
+                                setNotification(notification?.filter((n) => n != noti));
+                                history.push(`/ad/${noti._id}`);
+                            }}
+                        >
+                            {`New Buy Request for ${noti.title}`}</NavDropdown.Item>
+                    ))
+                }
+                <NavDropdown.Divider />
+            </NavDropdown> */}
             {loading && <Loading />}
             {error && <ErrorMessage variant="danger">{error}</ErrorMessage>}
             {errMessage && <ErrorMessage variant="danger">{errMessage}</ErrorMessage>}
@@ -85,16 +126,16 @@ const AdScreen = ({ match }) => {
                 <Col sm={8}>
                     <Card>
                         <Card.Body variant="top" >
-                            <Carousel variant="dark">
+                            <Carousel variant="dark" className='bg-warning'>
                                 {
                                     ads?.image?.map((pic, i) => (
                                         <Carousel.Item variant="dark">
                                             <img
-                                                className="d-block w-100"
                                                 src={pic}
                                                 alt={i}
                                                 style={{ height: '60vh' }}
                                             />
+                                            {/* <Image src={pic} responsive fluid className='mw-100 mh-75'/> */}
                                             <Carousel.Caption>
                                                 <h3>{ads?.price + i}</h3>
                                                 <p>{ads?.title}</p>
@@ -113,22 +154,25 @@ const AdScreen = ({ match }) => {
                             </Card.Text>
                             {
                                 (ads?.seller?._id === userInfo._id && ads?.buyer === null) &&
-                                (<DropdownButton id="dropdown-basic-button" title="Requesters">
+                                (<>
+                                    <DropdownButton id="dropdown-basic-button" 
+                                    title=
+                                    {<><Badge pill bg="danger" size='large'>{ads?.requesters?.length}</Badge> {' '}Requesters </>}>
                                     {
                                         ads?.requesters?.length === 0 && "No Requests Found"
                                     }
                                     {
                                         (ads?.requesters?.map((aa) => (
                                             <>
-                                                <Dropdown.Item style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                                <Dropdown.Item style={{ display: 'flex', justifyContent: 'space-around',alignItems:'center' }}>
                                                     {aa.name}
                                                     <AiFillCheckCircle onClick={() => acceptRequest(aa)} />
-                                                    <AiFillCloseCircle />
                                                 </Dropdown.Item>
                                             </>
                                         )))
                                     }
-                                </DropdownButton>)
+                                </DropdownButton>
+                                </>)
                             }
                             {
                                 (ads?.seller?._id !== userInfo._id) &&
