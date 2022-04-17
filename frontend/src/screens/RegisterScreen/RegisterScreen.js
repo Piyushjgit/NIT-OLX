@@ -38,7 +38,7 @@ const RegisterScreen = ({ history }) => {
             }
             setPicMessage(null);
             if (pic.type === "image/jpeg" || pic.type === "image/png") {
-                // console.log(pic);
+                // console.log(pic);9999999999999
                 const data = new FormData();
                 data.append("file", pic);
                 data.append("upload_preset", "NotesApp");

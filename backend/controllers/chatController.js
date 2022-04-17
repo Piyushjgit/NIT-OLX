@@ -3,70 +3,72 @@ const User = require('../models/userModel');
 const asyncHandler = require('express-async-handler');
 
 const accessChat = asyncHandler(async (req, res) => {
-    const { userId } = req.body;
-
-    if (!userId) {
-        console.log("UserId param not sent with request");
-        return res.sendStatus(400);
+    // const { sellerId, receiverId } = req.body;
+    const sellerId=req.params.id;
+    const receiverId=req.user._id;
+    // console.log(sellerId);
+    let room_alloted = ""
+    if (sellerId > receiverId) {
+        room_alloted = sellerId + " " + receiverId
     }
+    else {
+        room_alloted = receiverId + " " + sellerId
+    }
+    // console.log('Room Alloted is:-', room_alloted)
 
-    var isChat = await Chat.find({
-        $and: [
-            { users: { $elemMatch: { $eq: req.user._id } } },
-            { users: { $elemMatch: { $eq: userId } } },
-        ],
-    }).populate("users", "-password")
-        .populate("latestMessage");
-
-    isChat = await User.populate(isChat, {
-        path: "latestMessage.sender",
-        select: "name pic email",
-    });
-    console.log(isChat);
-    if (isChat.length > 0) {
-        res.send(isChat[0]);
-    } else {
-        var chatData = {
-            chatName: "sender",
-            users: [req.user._id, userId],
-        };
-
-        try {
-            const createdChat = await Chat.create(chatData);
-            const FullChat = await Chat.findOne({ _id: createdChat._id }).populate(
-                "users",
-                "-password"
-            );
-            res.status(200).json(FullChat);
-        } catch (error) {
-            res.status(400);
-            throw new Error(error.message);
+    const room_given = await Chat.findOne({ room_id: room_alloted })
+    if (room_given) {
+        // console.log("heelo:", room_given)
+        res.json({
+            room_id: room_given.room_id,
+            messages: room_given.messages,
+        })
+    }
+    else {
+        const room_to_be_alloted = await Chat.create({room_id: room_alloted});
+        if (room_to_be_alloted) {
+            res.json({
+                room_id: room_to_be_alloted.room_id,
+                messages: room_to_be_alloted.messages,
+            })
+        }
+        else {
+            throw new Error("Room not Alloted");
         }
     }
 });
-const fetchChats = asyncHandler(async (req, res) => {
-    try {
-         var chats= await Chat.find({
-            users: { $elemMatch: { $eq: req.user._id }} 
-        }).populate("users",'-password')
-        .populate("latestMessage")
-        .sort({updatedAt:-1});
-        
-        chats = await User.populate(chats, {
-            path: "latestMessage.sender",
-            select: "name pic email",
+
+const updateChat = asyncHandler(async (req, res) => {
+    const { room_id, messages } = req.body
+    // console.log(req.body);
+    const available = await Chat.findOne({ room_id });
+    if (available) {
+        // available.room_id = room_id || available.room_id;
+        available.messages = messages || available.messages;
+        console.log('Room-id:', available)
+        const updatedChat = await available.save();
+        res.json({
+            room_id: updatedChat.room_id,
+            messages: updatedChat.messages,
         });
-        res.status(200).json(chats);
-    } catch (error) {
-        res.status(400);
-        throw new Error(error.message);
+    }
+    else 
+    {
+        res.status(404).json("Chat Not Found");
+    }
+
+});
+
+const userChat = asyncHandler(async (req, res) => {
+    const user=(req.user._id);
+    const chats = await Chat.find({ room_id: { $regex: user }});
+    if(chats)
+    {
+        res.status(201).json(chats);
+    }
+    else{
+        res.status(404).json("Chat Not Found");
     }
 });
 
-const createChat = asyncHandler(async (req, res) => {
-    
-});
-const deleteChat = asyncHandler(async (req, res) => {
-
-});
-module.exports = { fetchChats, createChat, accessChat, deleteChat };
+module.exports = { updateChat, accessChat, userChat };

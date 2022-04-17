@@ -34,7 +34,9 @@ const userSchema=mongoose.Schema(
             {
                 type: String,
             }   
-        }
+        },
+        resetToken:String,
+        expireToken:Date,
         } 
     ,
     {

@@ -3,6 +3,7 @@ import thunk from "redux-thunk";
 import { composeWithDevTools } from "redux-devtools-extension";
 import { userLoginReducer, userRegisterReducer, userUpdateReducer, userDeleteReducer } from "./reducers/userReducers";
 import { adListReducer, adDeleteReducer, adCreateReducer, adUpdateReducer, singleAdListReducer } from "./reducers/adsReducer";
+import { fetchChatReducer } from "./reducers/chatReducer";
 const reducers=combineReducers({
     userLogin:userLoginReducer,
     userRegister: userRegisterReducer,
@@ -13,7 +14,8 @@ const reducers=combineReducers({
     adUpdate: adUpdateReducer,
     adDelete: adDeleteReducer,
     userAds: adListReducer,
-    singleAd:singleAdListReducer
+    singleAd:singleAdListReducer,
+    userChats: fetchChatReducer
 })
 
 const userInfoFromStorage = localStorage.getItem("userInfo")

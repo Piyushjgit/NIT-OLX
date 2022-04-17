@@ -22,4 +22,5 @@ const AdsSchema = new mongoose.Schema(
     },
     { timestamps: true }
 );
+// db.Ads.createIndex({ "createdAt": 1 }, { expireAfterSeconds: 5184000 } );
 module.exports = mongoose.model("Ads", AdsSchema);

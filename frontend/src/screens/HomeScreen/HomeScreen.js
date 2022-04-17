@@ -54,7 +54,7 @@ const HomeScreen = ({ search }) => {
     return (
         <Container className='mt-4'>
             <Link to='/createad'>
-                <Button>
+                <Button className='ml-3'>
                     Create Ad
                 </Button>
             </Link>

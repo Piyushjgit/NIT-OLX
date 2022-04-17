@@ -3975,7 +3975,8 @@ input[type="submit"].btn-block {
   cursor: default;
 }
 .nav-tabs {
-  border-bottom: 1px solid #f0f0f0;
+  /* border-bottom: 1px solid #f0f0f0; */
+  border-bottom: 1px solid coral;
   width:40vw;
   margin:auto;
   display: flex;
@@ -3983,6 +3984,7 @@ input[type="submit"].btn-block {
 }
 .nav-tabs .nav-item {
   margin-bottom: -1px;
+  /* border: 1px solid coral; */
 }
 .nav-tabs .nav-link {
   border: 1px solid transparent;
@@ -4002,8 +4004,9 @@ input[type="submit"].btn-block {
 .nav-tabs .nav-item.show .nav-link,
 .nav-tabs .nav-link.active {
   color: azure;
-  background-color:rgb(11, 231, 11);
-  border-color: #f0f0f0;
+  background-color:#158cba; 
+  border:1px dashed cornflowerblue;
+  /* FF4136 */
   outline:none;
 }
 .nav-tabs .dropdown-menu {

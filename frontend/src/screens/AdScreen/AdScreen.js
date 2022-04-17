@@ -11,6 +11,10 @@ import ErrorMessage from '../../components/ErrorMessage';
 import { AD_UPDATE_SUCCESS, AD_UPDATE_FAIL, AD_LIST_SUCCESS } from '../../constants/adsConstant';
 import { io } from "socket.io-client";
 import NotificationBadge, { Effect } from 'react-notification-badge';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import NotFound from '../NotFound';
+import { fetchChat } from '../../actions/chatActions';
 const AdScreen = ({ match }) => {
     const userLogin = useSelector((state) => state.userLogin);
     const { userInfo } = userLogin;
@@ -57,12 +61,12 @@ const AdScreen = ({ match }) => {
                 },
             };
             const { data } = await axios.post(`/api/ads/${match.params.id}/buyrequest`, {}, config);
+            toast.success("Request Sent Successfully");
             // socket.emit('new request', data);
             // socket.emit('new request',{
             //     senderName:userInfo.name,
             //     product:data.title
             // });
-            setErrMessage('Request Sent');
             // history.push('/home');
             // console.log(data);
         } catch (error) {
@@ -71,6 +75,7 @@ const AdScreen = ({ match }) => {
                     ? error.response.data.message
                     : error.message;
             setErrMessage(message);
+            toast.warn("Request has been Sent Already");
         }
     }
     const acceptRequest = async (user) => {
@@ -83,6 +88,7 @@ const AdScreen = ({ match }) => {
             };
             const { data } = await axios.post(`/api/ads/${match.params.id}/${user._id}/confirmrequest`, {}, config);
             dispatch({ type: AD_UPDATE_SUCCESS, payload: data });
+            toast.success("Product Sold !");
             dispatch(currentAd(match.params.id));
             setErrMessage('');
             // console.log(data);
@@ -119,8 +125,16 @@ const AdScreen = ({ match }) => {
                 }
                 <NavDropdown.Divider />
             </NavDropdown> */}
+            <ToastContainer
+                position="top-right"
+                autoClose={3000}
+                rtl={false}
+                pauseOnFocusLoss
+                pauseOnHover
+            />
+            {error?(<NotFound/>):(
+            <>
             {loading && <Loading />}
-            {error && <ErrorMessage variant="danger">{error}</ErrorMessage>}
             {errMessage && <ErrorMessage variant="danger">{errMessage}</ErrorMessage>}
             <Row>
                 <Col sm={8}>
@@ -181,7 +195,7 @@ const AdScreen = ({ match }) => {
                                 </>
                             }
                             {
-                                ads?.buyer && <Alert variant='success' >Product Sold to {ads?.buyer?.name}</Alert>
+                                        ads?.buyer && <Alert variant='success' className='w-25 font-weight-bold'><h6>Product Sold to {ads?.buyer?.name}</h6></Alert>
                             }
                         </Card.Body>
                     </Card>
@@ -213,13 +227,14 @@ const AdScreen = ({ match }) => {
                                 {' '}
                                 <b>{ads?.seller?.name}</b>
                             </Card.Text>
-                            <Button onClick={chatHandler}>
-                                Chat With Seller
-                            </Button>
+                                    <Link to={`/chat/${ads?.seller?._id}`} >
+                                        Chat With Seller
+                                    </Link>
                         </Card.Body>
                     </Card>
                 </Col>
             </Row>
+            </>)}
         </Container>
     )
 }

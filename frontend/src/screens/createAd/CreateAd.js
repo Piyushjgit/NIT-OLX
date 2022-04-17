@@ -5,6 +5,8 @@ import { createAd } from "../../actions/adActions";
 import Loading from "../../components/Loading";
 import ErrorMessage from "../../components/ErrorMessage";
 import Rules from './Rules'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 function CreateAd({ history }) {
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
@@ -27,7 +29,8 @@ function CreateAd({ history }) {
 
     useEffect(() => {
         if (!image) {
-            return setPicMessage("Please Select a Picture");
+            toast.error("Please Add Images");
+            return ;
         }
         setPicMessage(null);
         var len = 0;
@@ -54,7 +57,8 @@ function CreateAd({ history }) {
                     });
             }
             else {
-                return setPicMessage("Please Select an Image");
+                toast.error("Please Select jpeg or png image");
+                return ;
             }
         })
     }, [image])
@@ -63,16 +67,25 @@ function CreateAd({ history }) {
     // }, [fiImage])
     const submitHandler = async (e) => {
         e.preventDefault();
-        dispatch(createAd(title, description, fiImage, price));
         if (!title || !description || !price || !image) {
-            return "Please fill all fields";
+            toast.error("Please fill all fields.");
+            return ;
         }
+        dispatch(createAd(title, description, fiImage, price));
         resetHandler();
+        toast.success("Ad Created successfully");
         history.push("/home");
     }
 
     return (
         <>
+            <ToastContainer
+                position="top-center"
+                autoClose={3000}
+                rtl={false}
+                pauseOnFocusLoss
+                pauseOnHover
+            />
             {show && (<Modal show={show} onHide={() => setShow(false)}
                 size="lg"
                 aria-labelledby="contained-modal-title-vcenter"
@@ -95,8 +108,8 @@ function CreateAd({ history }) {
                 </Modal.Footer>
             </Modal>)}
             <Card>
-                <Form.Group>
-                    <Button className="mx-2" onClick={() => setShow(true)} variant="danger">
+                <Form.Group className='d-flex'>
+                    <Button className="mx-2 w-5" onClick={() => setShow(true)} variant="danger">
                         Rules
                     </Button>
                 </Form.Group>
@@ -110,7 +123,7 @@ function CreateAd({ history }) {
                             <Form.Control
                                 type="title"
                                 value={title}
-                                placeholder="Enter the title"
+                                placeholder="What is your product ?"
                                 onChange={(e) => setTitle(e.target.value)}
                             />
                         </Form.Group>
@@ -120,7 +133,7 @@ function CreateAd({ history }) {
                             <Form.Control
                                 as="textarea"
                                 value={description}
-                                placeholder="Enter the content"
+                                placeholder="Add 3-4 lines describing your product"
                                 rows={4}
                                 onChange={(e) => setDescription(e.target.value)}
                             />
@@ -131,11 +144,20 @@ function CreateAd({ history }) {
                                 type='number'
                                 min={0}
                                 value={price}
-                                placeholder="Enter the content"
+                                placeholder="Enter the Price"
                                 rows={4}
                                 onChange={(e) => setPrice(e.target.value)}
                             />
                         </Form.Group>
+                        {/* <section id="textarea" contenteditable="true">
+                            <ul>
+                                <li></li>
+                                <li></li>
+                                <li></li>
+                                <li></li>
+                            </ul>
+
+                        </section> */}
                         <Form.Group className='mt-3'>
                             <span className='mr-2'>Uplaod Image</span>
                             <input type="file" multiple

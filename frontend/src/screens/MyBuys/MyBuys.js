@@ -18,11 +18,11 @@ const MyAds = () => {
     const { userInfo } = userLogin;
 
     const adDelete = useSelector((state) => state.adDelete);
-    const { loading:loadingDelete, error:errorDelete } = adDelete;
+    const { loading: loadingDelete, error: errorDelete } = adDelete;
     const deleteHandler = () => {
         if (window.confirm("Are You Sure you want to delete all sold Ads?")) {
             ads?.map((ad) => {
-                (ad?.buyer)&&dispatch(deleteAd(ad._id));
+                (ad?.buyer) && dispatch(deleteAd(ad._id));
             });
             toast.success("All Sold Ads Deleted Successfully");
             dispatch(myAds());
@@ -54,7 +54,7 @@ const MyAds = () => {
                 className="mb-3 mt-4"
                 // transition={false}
                 // variant="pills"
-                style={{fontWeight:800}}
+                style={{ fontWeight: 800 }}
             >
                 <Tab eventKey="notsold" title="In Process" size="lg">
                     <Row>
