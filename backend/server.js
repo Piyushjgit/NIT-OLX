@@ -1,4 +1,5 @@
 const express = require('express');//package
+const path=require('path');
 const dotenv = require('dotenv');
 const connectDB = require('./config/db');
 const userRoutes = require('./routes/userRoutes');
@@ -8,7 +9,6 @@ const chatRoutes = require('./routes/chatRoutes');
 // const messageRoutes = require('./routes/messageRoutes');
 const { notFound, errorHandler } = require('./middlewares/errorMiddleware');
 const app = express();//object of the imported package
-const path=require('path');
 dotenv.config();
 connectDB();
 
@@ -28,7 +28,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/ads', adRoutes);
 app.use('/api/chat', chatRoutes)
 
-__dirname = path.resolve();
+// __dirname = path.resolve();
 if (process.env.NODE_ENV === "production") {
     app.use(express.static(path.join(__dirname, "/frontend/build")));
 
@@ -36,7 +36,7 @@ if (process.env.NODE_ENV === "production") {
         res.sendFile(path.resolve(__dirname, "frontend", "build", "index.html"))
     );
 } else {
-    app.get("/", (req, res) => {
+    app.get("/", (req, res) => {x
         res.send("API is running..");
     });
 }
