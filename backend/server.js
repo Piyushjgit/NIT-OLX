@@ -28,8 +28,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/ads', adRoutes);
 app.use('/api/chat', chatRoutes)
 
-const __dirname = path.resolve();
-
+__dirname = path.resolve();
 if (process.env.NODE_ENV === "production") {
     app.use(express.static(path.join(__dirname, "/frontend/build")));
 
@@ -41,7 +40,6 @@ if (process.env.NODE_ENV === "production") {
         res.send("API is running..");
     });
 }
-
 app.use(notFound);
 app.use(errorHandler);
 
