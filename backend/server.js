@@ -29,6 +29,13 @@ app.use('/api/ads', adRoutes);
 app.use('/api/chat', chatRoutes)
 
 __dirname = path.resolve();
+console.log("------------------------------------------------");
+console.log("------------------------------------------------");
+console.log("------------------------------------------------");
+console.log(process.env.NODE_ENV);
+console.log("------------------------------------------------");
+console.log("------------------------------------------------");
+console.log("------------------------------------------------");
 if (process.env.NODE_ENV === "production") {
     app.use(express.static(path.join(__dirname, "/frontend/build")));
     app.get("*", (req, res) =>
