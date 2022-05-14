@@ -4,16 +4,19 @@ const cloudinary = require("../utlis/cloudinary");
 const asyncHandler = require('express-async-handler');
 
 const allAds = asyncHandler(async (req, res) => {
-    const ads = await Ads.find({ buyer: null }).populate("seller", "name pic");
+    const ads = await Ads.find({ buyer: null }).populate("seller", "name pic").sort('-updatedAt');
     res.status(200).json(ads);
 });
 const myAds = asyncHandler(async (req, res) => {
-    const ads = await Ads.find({ seller: req.user._id }).populate("seller buyer", "name pic");
+    const ads = await Ads.find({ seller: req.user._id }).populate("seller buyer", "name pic").sort('-updatedAt');
     res.status(200).json(ads);
 });
 const myBuys = asyncHandler(async (req, res) => {
-    const ads = await Ads.find({ buyer: req.user._id });
+    const ads1 = await Ads.find({ buyer: req.user._id }).populate("seller buyer", "name pic").sort('-updatedAt');
+    const ads2 = await Ads.find({ requesters: { $in: req.user._id } }).sort('-updatedAt');
+    const ads = ads1.concat(ads2);
     res.status(200).json(ads);
+
 });
 const getAdById = asyncHandler(async (req, res) => {
     const ad = await Ads.findById(req.params.id).populate("seller buyer requesters", "name pic");
@@ -87,20 +90,24 @@ const buyRequest = asyncHandler(async (req, res) => {
     if ((req.user._id).toString() === ad.seller.toString()) {
         res.status(401);
         throw new Error("This is your own product");
-        console.log("problem");
     }
     if ((ad.buyer) !== null) {
         res.status(401);
         throw new Error("This Product has been sold");
     }
-    if (ad.requesters.includes(req.user._id)) {
-        res.status(401);
-        throw new Error("Request Already Sent");
-    }
-    if (ad) {
-        // Ads.findByIdAndUpdate(req.params.id, { requester})
-        await ad.updateOne({ $push: { requesters: req.user._id } });
-        res.status(200).json(ad);
+    if(ad)
+    {
+        if (ad.requesters.includes(req.user._id)) {
+            await ad.updateOne({ $pull: { requesters: req.user._id } });
+            var updatedAd = await ad.save();
+            res.status(201).json(updatedAd);
+        }
+        else 
+        {
+            await ad.updateOne({ $push: { requesters: req.user._id } });
+            var updatedAd = await ad.save();
+            res.status(201).json(updatedAd);
+        }
     }
     else {
         res.status(404);

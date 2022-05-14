@@ -1,12 +1,12 @@
 import React from 'react'
 import { Container, Row, Col, Button } from 'react-bootstrap'
-
+import pdt from './image.png';
 const NotFound = () => {
     return (
         <Container className='mt-3'>
             <Row>
                 <Col>
-                    <img src="https://cdn-icons.flaticon.com/png/512/4196/premium/4196404.png?token=exp=1649766489~hmac=22928531385176b7ee4f80758ef92d2a" alt="Image" />
+                    <img src={pdt} alt="Image" style={{maxWidth:'80vw',maxHeight:'80vh'}}/>
                 </Col>
                 <Row className='my-auto ml-5'>
                     <Col>

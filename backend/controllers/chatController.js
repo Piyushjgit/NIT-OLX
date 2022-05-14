@@ -61,7 +61,7 @@ const updateChat = asyncHandler(async (req, res) => {
 
 const userChat = asyncHandler(async (req, res) => {
     const user=(req.user._id);
-    const chats = await Chat.find({ room_id: { $regex: user }});
+    const chats = await Chat.find({ room_id: { $regex: user }}).sort({updatedAt:-1});
     if(chats)
     {
         res.status(201).json(chats);

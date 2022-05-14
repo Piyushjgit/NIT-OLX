@@ -6,12 +6,32 @@ const cloudinary = require("../utlis/cloudinary");
 const nodemailer = require('nodemailer');
 const sendgridTransport = require('nodemailer-sendgrid-transport');
 const crypto = require('crypto');
-const transporter = nodemailer.createTransport(sendgridTransport({
+// const transporter = nodemailer.createTransport(sendgridTransport({
+//     auth: {
+//         api_key: "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"
+//         //Go here: Setting -> Sender Authentication -> Single Sender Verification -> Verify an Address
+//     }
+// }));
+const transporter = nodemailer.createTransport({
+    service: "gmail",
     auth: {
-        api_key: "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"
-        //Go here: Setting -> Sender Authentication -> Single Sender Verification -> Verify an Address
+        user: process.env.USER_ID,
+        pass: process.env.USER_PASS,
+    },
+    tls: {
+        rejectUnauthorized: false
     }
-}));
+});
+// const transporter = nodemailer.createTransport({
+//     host: 'smtp.gmail.com',
+//     port: 587,
+//     ignoreTLS: false,
+//     secure: false,
+//     auth: {
+//         user: "RamannRahull@gmail.com",
+//         pass: "RamannRahull@10"
+//     }
+// });
 const registerUser = asyncHandler(async (req, res) => {
     const { name, email, password, pic } = req.body;
 
@@ -54,10 +74,42 @@ const registerUser = asyncHandler(async (req, res) => {
     }
 });
 const authUser = asyncHandler(async (req, res) => {
-    const { email, password } = req.body;
+    // const { email, password } = req.body;
+
+    // const user = await User.findOne({ email });
+    // if (user && (await user.matchPassword(password))) {
+    //     res.json(
+    //         {
+    //             _id: user._id,
+    //             name: user.name,
+    //             email: user.email,
+    //             pic: user.pic,
+    //             token: generateToken(user._id)
+    //         }
+    //     );
+    // }
+    // else {
+    //     res.status(400);
+    //     throw new Error("Invalid Email or Password");
+    // }
+    const { email, password, g_token } = req.body;
 
     const user = await User.findOne({ email });
-    if (user && (await user.matchPassword(password))) {
+    // console.log(g_token)
+    // console.log(user)
+    if (user && g_token !== null) {
+        console.log("Inside google oAuth")
+        res.json(
+            {
+                _id: user._id,
+                name: user.name,
+                email: user.email,
+                pic: user.pic,
+                token: generateToken(user._id)
+            }
+        );
+    }
+    else if (user && (await user.matchPassword(password))) {
         res.json(
             {
                 _id: user._id,
@@ -73,7 +125,24 @@ const authUser = asyncHandler(async (req, res) => {
         throw new Error("Invalid Email or Password");
     }
 });
-
+const getUser = asyncHandler(async (req, res) => {
+    const { id } = req.body;
+    const user = await User.findOne({ _id: id });
+    console.log(user);
+    if (user) {
+        res.json(
+            {
+                _id: user._id,
+                name: user.name,
+                image: user.pic.url
+            }
+        );
+    }
+    else {
+        res.status(400);
+        throw new Error("User Not Found");
+    }
+});
 const deleteUser = asyncHandler(async (req, res) => {
     try {
         // await Note.remove({user:req.user._id});
@@ -124,13 +193,15 @@ const resetPassword = asyncHandler(async (req, res) => {
     })
     const user = await User.findOne({ email: req.body.email });
     if (!user)
-        res.status(422).send({ message: "User dont Exist with this email" });
+    {
+     return res.status(404).json("User dont Exist with this email" );
+    }
     user.resetToken = token;
     // console.log(token);
     // console.log(user.resetToken);
     user.expireToken = Date.now() + 3600000;
     await user.save();
-    transporter.sendMail({
+    const data = transporter.sendMail({
         to: user.email,
         from: "no-reply@nitkkr-olx",
         subject: "Password Reset Link @NIT-KKR OLX",
@@ -141,7 +212,8 @@ const resetPassword = asyncHandler(async (req, res) => {
             console.log(err);
             throw err;
         }
-    })
+    });
+    console.log(data);
     res.status(200).json({ message: "Check your Email for password Reset Link" });
 
 });
@@ -161,4 +233,21 @@ const setNewPassword = asyncHandler(async (req, res) => {
     }
 
 });
-module.exports = { registerUser, authUser, updateProfile, deleteUser, resetPassword, setNewPassword };
+const contactUs = asyncHandler(async (req, res) => {
+    const {name,contact,message}=req.body;
+    const data = transporter.sendMail({
+        to: "piyush_11913097@nitkkr.ac.in",
+        from: "no-reply@nitkkr-olx",
+        subject: "Contact Us Form Message @NIT-OLX",
+        html: `${name} <br>  ${contact} <br> ${req.user.email} <br>
+            <h3>${message}</h3>`
+    }, (err) => {
+        if (err) {
+            console.log(err);
+            throw err;
+        }
+    });
+    res.status(200).json({ message: "Message Sent Successfully" });
+
+});
+module.exports = { registerUser, authUser, updateProfile, deleteUser, getUser, resetPassword, setNewPassword, contactUs };

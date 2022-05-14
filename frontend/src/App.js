@@ -19,6 +19,11 @@ import ResetPassword from './screens/RegisterScreen/ResetPassword';
 import ResetPage from './screens/RegisterScreen/ResetPage';
 import NotFound from './screens/NotFound';
 import ChatScreen from './screens/ChatScreen/ChatScreen';
+import MyBuys from './screens/MyBuys/MyBuys';
+import LoginScreen2 from './screens/LoginScreen/LoginScreen2';
+import RegisterScreen2 from './screens/RegisterScreen/RegisterScreen2';
+import { Container } from 'react-bootstrap';
+import ContactUs from './screens/ContactUs/ContactUs';
 
 function App() {
   const dispatch = useDispatch();
@@ -46,13 +51,18 @@ function App() {
   return (
     <BrowserRouter>
 
-        {userInfo && <Header setSearch={setSearch} />}
+      {userInfo && <Header setSearch={setSearch} />}
+      <div style={{ height: '100hv', marginBottom: '6rem'}}>
       <Switch>
-        <Route path='/' component={LandingPage} exact />
+        <Route path='/' component={LoginScreen2} exact />
         <Route path='/login' component={LoginScreen} />
+        <Route path='/login2' component={LoginScreen2} />
+        <Route path='/register2' component={RegisterScreen2} />
         <Route path='/register' component={RegisterScreen} />
         <Route path='/myads' component={MyAds} />
+        <Route path='/myBuys' component={MyBuys} />
         <Route path='/createad' component={CreateAd} />
+        <Route path='/contactus' component={ContactUs} />
         <Route path='/ad/:id' component={AdScreen} />
         <Route
           path="/home"
@@ -67,7 +77,8 @@ function App() {
         <Route path='/chat/:id' component={ChatScreen} />
         <Route component={NotFound} />
       </Switch>
-        <Footer />
+      </div>
+      <Footer/>
     </BrowserRouter>
     //   let token = localStorage.getItem(TOKEN);
     // let decodedToken = jwt_decode(token);

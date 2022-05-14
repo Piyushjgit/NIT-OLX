@@ -49,6 +49,7 @@
 ::before {
   box-sizing: border-box;
 }
+
 html {
   font-family: sans-serif;
   line-height: 1.15;
@@ -4143,6 +4144,14 @@ input[type="submit"].btn-block {
     padding-right: 0;
     padding-left: 0;
   }
+  .nav-tabs{
+  /* border-bottom: 1px solid #f0f0f0; */
+  border-bottom: 1px solid coral;
+  width:80vw;
+  margin:auto;
+  display: flex;
+  justify-content: space-between;
+}
 }
 @media (min-width: 576px) {
   .navbar-expand-sm {
@@ -6257,7 +6266,7 @@ button.bg-info:hover {
   background-color: #48b9e5 !important;
 }
 .bg-warning {
-  background-color: #110f0d !important;
+  background-color: #24292F !important;
 }
 a.bg-warning:focus,
 a.bg-warning:hover,

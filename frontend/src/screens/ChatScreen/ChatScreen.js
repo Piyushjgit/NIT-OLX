@@ -24,14 +24,29 @@ function ChatScreen({ match }) {
     const userChats = useSelector((state) => state.userChats);
     const { chatInfo,loading } = userChats;
     
+    const [receiver, setReceiver] = useState();
     // let messages = null
     // let room = ""
     // if (chatInfo) {
     //     messages = chatInfo.messages;
     //     room = chatInfo.room_id;
     // }
+    const temp2=async()=>{
+        const config = {
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${userInfo.token}`,
+            },
+        };
+        const { data } = await axios.post('/api/users/getUser',{id:match?.params.id}, config);
+        setReceiver(data);
+    }
+    useEffect(() => {
+        setReceiver(receiver);
+    }, [receiver])
     useEffect(() => {
         temp();
+        temp2();
     }, [])
     useEffect(() => {
         if (!userInfo) {
@@ -47,8 +62,9 @@ function ChatScreen({ match }) {
     }, [chatInfo?.room_id])
         return (
             <>
-            {loading&&<Loading/>}
-            <Chat socket={socket} username={userInfo?.name} room={chatInfo?.room_id} messages={chatInfo?.messages} />
+            {loading?<Loading/>:
+            <Chat socket={socket} username={userInfo?.name} room={chatInfo?.room_id} messages={chatInfo?.messages} receiver={receiver}/>
+            }
             </>
         )
 }

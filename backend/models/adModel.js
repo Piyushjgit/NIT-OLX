@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const AdsSchema = new mongoose.Schema(
     {
-        title: { type: String, required: true },
+        title: { type: String, trim: true, required: true },
         description: { type: String, required: true },
         image: [{ type: String, required: true }],
         price: { type: Number, required: true },
@@ -17,10 +17,9 @@ const AdsSchema = new mongoose.Schema(
         requesters: [{
             type: mongoose.Schema.Types.ObjectId,
             ref: "User"
-        }]
-
+        }],
     },
     { timestamps: true }
 );
-// db.Ads.createIndex({ "createdAt": 1 }, { expireAfterSeconds: 5184000 } );
+// AdsSchema.index({ "createdAt": 1 }, { expires: 60 * 24 * 60 * 60 });
 module.exports = mongoose.model("Ads", AdsSchema);

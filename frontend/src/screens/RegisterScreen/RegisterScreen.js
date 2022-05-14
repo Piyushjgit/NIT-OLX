@@ -9,6 +9,8 @@ import ErrorMessage from '../../components/ErrorMessage'
 import { useEffect } from 'react'
 import { Register } from '../../actions/userActions'
 import { useDispatch, useSelector } from 'react-redux'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const RegisterScreen = ({ history }) => {
     const [email, setEmail] = useState();
@@ -38,7 +40,6 @@ const RegisterScreen = ({ history }) => {
             }
             setPicMessage(null);
             if (pic.type === "image/jpeg" || pic.type === "image/png") {
-                // console.log(pic);9999999999999
                 const data = new FormData();
                 data.append("file", pic);
                 data.append("upload_preset", "NotesApp");
@@ -50,8 +51,12 @@ const RegisterScreen = ({ history }) => {
                     .then((dataa) => {
                         // setPic(dataa.url);
                         console.log(dataa);
-                        setWait(true);
                         dispatch(Register(name, email, password, { url: dataa.url, deleteId: dataa.public_id }));
+                        setTimeout(() => {
+                            setWait(true);
+                        },1500);
+                        setWait(false);
+                        toast.success(`Account Created Successfully !`);
                     })
                     .catch((err) => {
                         console.log(err);
@@ -64,10 +69,17 @@ const RegisterScreen = ({ history }) => {
     }
     return (
         <MainScreen title="REGISTER">
+            <ToastContainer
+                position="top-right"
+                autoClose={3000}
+                rtl={false}
+                pauseOnFocusLoss
+                pauseOnHover
+            />
+            {wait && <Loading />}
             {error && <ErrorMessage variant='danger'>{error}</ErrorMessage>}
             {message && <ErrorMessage variant='danger'>{message}</ErrorMessage>}
             {loading && <Loading />}
-            {wait && <Loading />}
             <Form onSubmit={submitHandler}>
                 <Form.Group className="mb-3" controlId="formBasicName">
                     <Form.Label>Name </Form.Label>

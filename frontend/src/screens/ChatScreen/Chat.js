@@ -6,11 +6,14 @@ import './Chat.css'
 import Message from "./Message/Message";
 import { AiFillCloseCircle, AiOutlineSend } from "react-icons/ai";
 import { Link } from "react-router-dom";
+import { Image, Button, Popover, OverlayTrigger } from "react-bootstrap";
 
-function Chat({ socket, username, room, messages }) {
-    const [currentMessage, setCurrentMessage] = useState("");
+function Chat({ socket, username, room, messages, receiver }) {
+    const [currentMessage, setCurrentMessage] = useState();
     const [messageList, setMessageList] = useState();
     const [sock, setSock] = useState();
+    
+
     // console.log(Array.isArray((messages)));
     // console.log(Array.isArray((messageList)));
     // console.log(messageList);
@@ -25,20 +28,20 @@ function Chat({ socket, username, room, messages }) {
     }, [messages]);
     useEffect(() => {
         setSock(socket);
-        console.log(sock);
+        // console.log(sock);
     }, [socket]);
     const updateHandler = async () => {
         const chat_update = await axios.put("/api/chat/update", {
             room_id: room,
             messages: messageList
         });
-        console.log(chat_update);
+        // console.log(chat_update);
     }
     useEffect(() => {
         updateHandler();
         setCurrentMessage("");
     }, [messageList])
-    const sendMessage = async (e) => {
+    const sendMessage = async () => {
         // e.preventDefault();
         try {
             if (currentMessage !== "") {
@@ -60,7 +63,14 @@ function Chat({ socket, username, room, messages }) {
             console.log(err);
         }
     };
-
+    const getLocation = () => {
+        navigator.geolocation.getCurrentPosition((pos) => {
+            const link = `https://www.google.com/maps/search/?api=1&query=${pos.coords.latitude},${pos.coords.longitude}`;
+            setCurrentMessage(link);
+            document.getElementById('chatInput').focus();
+            // sendMessage();
+        })
+    }
     // useEffect(() => {
     //     sock?.on("receive_message", (data) => {
     //         let temp2 = JSON.stringify(data)
@@ -87,65 +97,38 @@ function Chat({ socket, username, room, messages }) {
     // })
 
     return (
-        // <div className="chat-window">
-        //     <div className="chat-header">
-        //         <p>Live Chat</p>
-        //     </div>
-        //     <div className="chat-body" style={{ height: '50vh',width:'60vw', overflow: 'scroll',margin:'0 auto' }}>
-        //         <ScrollToBottom className="message-container">
-        //             {messageList?.map((msg) => {
-        //                 let messageContent = JSON.parse(msg);
-        //                 return (
-        //                     <div>
-        //                     {username===messageContent.author?(
-        //                         <div className="message" style={{  color: 'white', backgroundColor: '#3B2A50' }}>
-        //                                 {messageContent.message}{messageContent.author}
-        //                         </div>
-        //                     ):(
-        //                     <div className="message" style={{ backgroundColor: '#CABCDC', right:0}}>
-        //                                     {messageContent.message}{messageContent.author}
-        //                     </div>
-        //                     )}
-        //                     </div>
-        //                 );
-        //             })}
-        //         </ScrollToBottom>
-        //     </div>
-        //     <div className="chat-footer">
-                // <input
-                //     type="text"
-                //     value={currentMessage}
-                //     placeholder="Hey..."
-                //     onChange={(event) => {
-                //         setCurrentMessage(event.target.value);
-                //     }}
-                //     onKeyPress={(event) => {
-                //         (event.key === "Enter") && sendMessage();
-                //     }}
-                // />
-        //         <button onClick={sendMessage}>&#9658;</button>
-        //     </div>
-        // </div>
+
         <div className="chatPage">
             <div className="chatContainer">
                 <div className="header">
                     <h2>NIT-OLX CHAT</h2>
-                    <h2> {username}</h2>
+                    <Button onClick={getLocation} size='sm'>Location</Button>
+                    <h2>
+                        {console.log(receiver?.image)}
+                        <Image src={receiver?.image} fluid responsive
+                            style={{ width: '1.5em', height: '1.5em', borderRadius: '2em', marginRight: '-0.2rem' }}
+                        />
+                        {' '}
+                        {receiver?.name}
+                    </h2>
+
                 </div>
                 <ReactScrollToBottom className="chatBox">
-                 {messageList?.map((msg) => {
-                  let messageContent = JSON.parse(msg);
-                  return(
-                      <Message user={username === messageContent.author ? '' : messageContent.author} message={messageContent.message} time={messageContent.time} classs={username === messageContent.author ? 'right' : 'left'} />
-                  );
-                     })}
+                    {messageList?.map((msg) => {
+                        let messageContent = JSON.parse(msg);
+                        return (
+                            <Message user={username === messageContent.author ? '' : messageContent.author} message={messageContent.message} time={messageContent.time} classs={username === messageContent.author ? 'right' : 'left'} />
+                        );
+                    })}
                 </ReactScrollToBottom>
                 <div className="inputBox">
                     <input
                         type="text"
                         id="chatInput"
                         value={currentMessage}
+                        name="Message"
                         placeholder="Hey..."
+                        autoFocus
                         onChange={(event) => {
                             setCurrentMessage(event.target.value);
                         }}
@@ -153,7 +136,7 @@ function Chat({ socket, username, room, messages }) {
                             (event.key === "Enter") && sendMessage();
                         }}
                     />
-                    <button onClick={() => sendMessage} className="sendBtn"><AiOutlineSend/></button>
+                    <button onClick={sendMessage} className="sendBtn"><AiOutlineSend /></button>
                 </div>
             </div>
 

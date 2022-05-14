@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import { Navbar, Nav, NavDropdown, Form, FormControl, Button, Container } from "react-bootstrap";
-import { Link, useHistory } from 'react-router-dom';
+import { Navbar, Nav, NavDropdown, Form, FormControl, Button, Container, Popover, OverlayTrigger } from "react-bootstrap";
+import { Link, useHistory,NavLink } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { logout } from '../../actions/userActions';
-import NotificationBadge from 'react-notification-badge';
-import { Effect } from 'react-notification-badge';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import axios from 'axios';
+import logopic from './logo1.png'
 const Header = ({ setSearch }) => {
     const userLogin = useSelector((state) => state.userLogin);
     const { userInfo } = userLogin;
@@ -16,33 +14,9 @@ const Header = ({ setSearch }) => {
     const logoutHandler = () => {
         dispatch(logout());
         toast.success('Logged Out Successfully');
-        history.push('/');
+        history.push('/login2');
     }
-    const [chats, setChats] = useState([]);
-    useEffect(() => {
-        setChats(chats);
-    }, [chats])
-    const ChatList=async()=>{
-        try {
-            const config = {
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${userInfo?.token}`,
-                },
-            };
-            const { data } = await axios.post(`/api/chat/singleChats`, {}, config);
-            setChats(data);
-        } catch (error) {
-            const message =
-                error.response && error.response.data.message
-                    ? error.response.data.message
-                    : error.message;
-            console.log(message);
-        }
-    }
-    useEffect(() => {
-        ChatList();
-    }, [history,userInfo])
+    const [selectedkey, setSelectedkey] = useState();
     return (
         <>
             <ToastContainer
@@ -52,75 +26,57 @@ const Header = ({ setSearch }) => {
                 pauseOnFocusLoss
                 pauseOnHover
             />
-            <Navbar expand="lg" bg="warning" sticky='top' variant='dark'>
+            <Navbar expand="lg" bg="warning" sticky='top' variant='dark' style={{bgColor:'#24292F'}}>
                 <Container>
                     <Navbar.Brand>
-                        <Link to='/'>
+                        <Link to='/home'>
                             <img
-                                src="/logo.svg"
-                                width="30"
-                                height="30"
+                                src={logopic}
+                                maxWidth='180'
+                                height='45'
                                 className="d-inline-block align-top"
-                                // alt="React Bootstrap logo"
-                            />{' '}NIT-OLX
+                                style={{ filter: 'invert(80)'}}
+                            // alt="React Bootstrap logo"
+                            />
+                            {/* {' '}NIT-OLX */}
                         </Link>
                     </Navbar.Brand>
                     <Navbar.Toggle aria-controls="basic-navbar-nav" />
-                    <Navbar.Collapse id="basic-navbar-nav">
+                    <Navbar.Collapse id="basic-navbar-nav" data-toggle="collapse" data-target="#navbar-collapse">
                         <Nav className="m-auto">
                             <Form className="d-flex">
                                 <FormControl
                                     type="text"
-                                    placeholder="Search"
+                                    placeholder="Search a product here ... Phone Cycle ..."
                                     className="mr-sm-2"
                                     aria-label="Search"
                                     onChange={(e) => setSearch(e.target.value)}
+                                    style={{width:'40vw'}}
                                 />
                             </Form>
                         </Nav>
-                        <Nav className=''>
+                        {console.log(selectedkey)}
+                        <Nav onSelect={(key) => setSelectedkey(key)}>
                             <Nav.Link>
-                                <Link to='/home'>
+                                <Link to='/home' activeStyle={{color:'red'}}>
                                     HOME
                                 </Link>
                             </Nav.Link>
                             <Nav.Link>
                                 <Link to='/myads'>
                                     MY-ADS
-                                </Link> 
+                                </Link>
                             </Nav.Link>
-                            {/* {"room":"62519ec111b30c5990768e44 621b618377ae8c8924a0d25d","author":"user","message":"hey","time":"4/16/2022, 11:34:01 PM"} */}
-                            <NavDropdown title="Chats" id="basic-nav-dropdown">
-                                {chats?.map((chat)=>{
-                                    const user1=chat.room_id.split(" ")[0];
-                                    const user2 = chat.room_id.split(" ")[1];
-                                    const user=(userInfo._id===user1?user2:user1);
-                                    let message=chat.messages.pop();
-                                    let in1=message?.indexOf('author');
-                                    let in2 = message?.indexOf('message');
-                                    let in3 = message?.indexOf('time');
-                                    const author=message?.substring(in1+9,in2-3);
-                                    const msg = message?.substring(in2+10, in3- 3);
-                                    {/* message=JSON.stringify(message); */}
-                                    {/* const author = message[1];
-                                    const msg = (message[2].substr(0,10)); */}
-                                    {/* console.log(message); */}
-                                    return(
-                                        <NavDropdown.Item href={`/chat/${user}`}>
-                                        <h4>
-                                            {author}{': '}{msg?.substr(0,10)}
-                                        </h4>
-                                        </NavDropdown.Item>    
-                                    );
-                                })}
-                                    <NavDropdown.Divider />
-                            </NavDropdown>
+                            <Nav.Link>
+                                <Link to='/myBuys'>
+                                    MY-BUYS
+                                </Link>
+                            </Nav.Link>
                             <NavDropdown title={`${userInfo.name}`} id="basic-nav-dropdown">
                                 <NavDropdown.Item href="/profile">Profile</NavDropdown.Item>
                                 <NavDropdown.Divider />
                                 <NavDropdown.Item onClick={logoutHandler}>Logout</NavDropdown.Item>
                             </NavDropdown>
-
                         </Nav>
                     </Navbar.Collapse>
                 </Container>

@@ -24,21 +24,19 @@ const AdScreen = ({ match }) => {
     const { loading, ads, error } = singleAd;
     const [errMessage, setErrMessage] = useState('');
     const url = "https://wa.me/91"
-    // const [socket, setSocket] = useState(null);
-    // const [notification, setNotification] = useState([]);
-    // useEffect(() => {
-    //     setSocket(io("http://localhost:5000"));
-    // }, []);
-    // useEffect(() => {
-    //     socket?.emit("setup", userInfo);
-    // }, [socket, userInfo])
-    // useEffect(() => {
-    //     socket?.on("request received", (newRequest) => {
-    //         if (!notification.includes(newRequest)) {
-    //             setNotification([newRequest, ...notification]);
-    //         }
-    //     })
-    // });
+
+    const [clear, setClear] = useState(false);
+    const [desc, setDesc] = useState([]);
+    useEffect(() => {
+        ads?.requesters?.map((val) => {
+            if ((val._id).toString() === (userInfo?._id).toString())
+                setClear(true);
+        })
+        setDesc(ads?.description?.split('.'));
+    }, [ads])
+    useEffect(() => {
+        setDesc(desc);
+    }, [desc])
     useEffect(() => {
         if (!userInfo) {
             history.push('/');
@@ -47,8 +45,8 @@ const AdScreen = ({ match }) => {
             dispatch(currentAd(match.params.id));
         }
     }, [dispatch, userInfo, history]);
+    
     const chatHandler = (e) => {
-
         e.preventDefault();
         window.open(`${url}9771139594`);
     }
@@ -61,21 +59,23 @@ const AdScreen = ({ match }) => {
                 },
             };
             const { data } = await axios.post(`/api/ads/${match.params.id}/buyrequest`, {}, config);
-            toast.success("Request Sent Successfully");
-            // socket.emit('new request', data);
-            // socket.emit('new request',{
-            //     senderName:userInfo.name,
-            //     product:data.title
-            // });
-            // history.push('/home');
-            // console.log(data);
+            (data?.requesters?.includes(userInfo?._id) ? (
+                <>
+                    {toast.success("Request Cancelled Successfully")}
+                    {setClear(false)}
+                </>
+            ) :
+                (<>
+                    {toast.success("Request Sent Successfully")}
+                    {setClear(true)}
+                </>));
         } catch (error) {
             const message =
                 error.response && error.response.data.message
                     ? error.response.data.message
                     : error.message;
             setErrMessage(message);
-            toast.warn("Request has been Sent Already");
+            toast.warn("Something Wrong ! Please Refresh");
         }
     }
     const acceptRequest = async (user) => {
@@ -126,115 +126,122 @@ const AdScreen = ({ match }) => {
                 <NavDropdown.Divider />
             </NavDropdown> */}
             <ToastContainer
-                position="top-right"
-                autoClose={3000}
+                position="top-center"
+                autoClose={2000}
                 rtl={false}
                 pauseOnFocusLoss
                 pauseOnHover
             />
-            {error?(<NotFound/>):(
-            <>
-            {loading && <Loading />}
-            {errMessage && <ErrorMessage variant="danger">{errMessage}</ErrorMessage>}
-            <Row>
-                <Col sm={8}>
-                    <Card>
-                        <Card.Body variant="top" >
-                            <Carousel variant="dark" className='bg-warning'>
-                                {
-                                    ads?.image?.map((pic, i) => (
-                                        <Carousel.Item variant="dark">
-                                            <img
-                                                src={pic}
-                                                alt={i}
-                                                style={{ height: '60vh' }}
-                                            />
-                                            {/* <Image src={pic} responsive fluid className='mw-100 mh-75'/> */}
-                                            <Carousel.Caption>
-                                                <h3>{ads?.price + i}</h3>
-                                                <p>{ads?.title}</p>
-                                            </Carousel.Caption>
-                                        </Carousel.Item>
-                                    ))
-                                }
-                            </Carousel>
-                            <hr />
-                            <Card.Title style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                <>{ads?.title}</>
-                            </Card.Title>
-                            <h1>Description</h1>
-                            <Card.Text>
-                                {ads?.description}
-                            </Card.Text>
-                            {
-                                (ads?.seller?._id === userInfo._id && ads?.buyer === null) &&
-                                (<>
-                                    <DropdownButton id="dropdown-basic-button" 
-                                    title=
-                                    {<><Badge pill bg="danger" size='large'>{ads?.requesters?.length}</Badge> {' '}Requesters </>}>
+            {error ? (<NotFound />) : (
+                <>
+                    {loading && <Loading />}
+                    {errMessage && <ErrorMessage variant="danger">{errMessage}</ErrorMessage>}
+                    <Row>
+                        <Col sm={8}>
+                            <Card>
+                                <Card.Body variant="top" >
+                                    <Carousel variant="dark" className='bg-warning'>
+                                        {
+                                            ads?.image?.map((pic, i) => (
+                                                <Carousel.Item variant="dark">
+                                                    <img
+                                                        src={pic}
+                                                        alt={i}
+                                                        style={{maxWidth:'100%',height:'60vh'}}
+                                                    />            
+                                                    <Carousel.Caption>
+                                                        <h3>{ads?.price + i}</h3>
+                                                        <p>{ads?.title}</p>
+                                                    </Carousel.Caption>
+                                                </Carousel.Item>
+                                            ))
+                                        }
+                                    </Carousel>
+                                    <hr />
+                                    <Card.Title style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                        <strong><h2>{ads?.title}</h2></strong>
+                                    </Card.Title>
+                                    <hr/>
+                                    <h3 style={{textDecoration:'underline'}}>Description</h3>
+                                    <Card.Text>
                                     {
-                                        ads?.requesters?.length === 0 && "No Requests Found"
+                                        desc?.map((des)=>(
+                                                <div>{des}</div>
+                                        ))      
+                                    }
+                                    </Card.Text>
+                                    <hr/>
+                                    {
+                                        (ads?.seller?._id === userInfo._id && ads?.buyer === null) &&
+                                        (<>
+                                            <DropdownButton id="dropdown-basic-button"
+                                                title=
+                                                {<><Badge pill bg="danger" size='large'>{ads?.requesters?.length}</Badge> {' '}Requesters </>}>
+                                                {
+                                                    ads?.requesters?.length === 0 && "No Requests Found"
+                                                }
+                                                {
+                                                    (ads?.requesters?.map((aa) => (
+                                                        <>
+                                                            <Dropdown.Item style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center' }}>
+                                                                {aa.name}
+                                                                <AiFillCheckCircle onClick={() => acceptRequest(aa)} />
+                                                            </Dropdown.Item>
+                                                        </>
+                                                    )))
+                                                }
+                                            </DropdownButton>
+                                        </>)
                                     }
                                     {
-                                        (ads?.requesters?.map((aa) => (
-                                            <>
-                                                <Dropdown.Item style={{ display: 'flex', justifyContent: 'space-around',alignItems:'center' }}>
-                                                    {aa.name}
-                                                    <AiFillCheckCircle onClick={() => acceptRequest(aa)} />
-                                                </Dropdown.Item>
-                                            </>
-                                        )))
+                                        (ads?.seller?._id !== userInfo._id) &&
+                                        <><Button variant="danger" onClick={requestHandler}>{clear ? ("Cancel Req") : ("Send Req")}</Button>
+                                        </>
                                     }
-                                </DropdownButton>
-                                </>)
-                            }
-                            {
-                                (ads?.seller?._id !== userInfo._id) &&
-                                <><Button variant="danger" onClick={requestHandler}>Request</Button>
-                                    <Button variant="danger" onClick={chatHandler}>Chat</Button>
-                                </>
-                            }
-                            {
-                                        ads?.buyer && <Alert variant='success' className='w-25 font-weight-bold'><h6>Product Sold to {ads?.buyer?.name}</h6></Alert>
-                            }
-                        </Card.Body>
-                    </Card>
-                </Col>
-                <Col sm={4}>
-                    <Card >
-                        <Card.Body variant="top" >
-                            <Card.Title>
-                                ₹ {ads?.price}
+                                    {
+                                        ads?.buyer && <Alert variant='success' className='w-75 font-weight-bold'><h6>Product Sold to {ads?.buyer?.name}</h6></Alert>
+                                    }
+                                </Card.Body>
+                            </Card>
+                        </Col>
+                        <Col sm={4}>
+                            <Card >
+                                <Card.Body variant="top" >
+                                    <Card.Title>
+                                        <h3><strong> ₹ {ads?.price}</strong></h3>
+                                    </Card.Title>
+                                    <Card.Text>
+                                        {desc?.map((des) => (
+                                            <div>{des}</div>
+                                        ))}
+                                    </Card.Text>
+                                    {/* <Card.Subtitle className="mb-2 text-muted">{ads?.seller?.name}</Card.Subtitle> */}
+                                    <footer className="blockquote-footer">
+                                        Posted On - {ads?.createdAt?.substring(0, 10)}
+                                    </footer>
+                                </Card.Body>
+                            </Card>
+                            <Card>
+                                <Card.Body variant="top" >
+                                    <Card.Title>
+                                        Seller Description
                             </Card.Title>
-                            <Card.Text>
-                                {ads?.description}
-                            </Card.Text>
-                            {/* <Card.Subtitle className="mb-2 text-muted">{ads?.seller?.name}</Card.Subtitle> */}
-                            <footer className="blockquote-footer">
-                                Posted On - {ads?.createdAt?.substring(0, 10)}
-                            </footer>
-                        </Card.Body>
-                    </Card>
-                    <Card>
-                        <Card.Body variant="top" >
-                            <Card.Title>
-                                Seller Description
-                            </Card.Title>
-                            <Card.Text>
-                                <Image src={ads?.seller?.pic?.url} fluid responsive
-                                    style={{ width: '4em', height: '4em', borderRadius: '2em' }}
-                                />
-                                {' '}
-                                <b>{ads?.seller?.name}</b>
-                            </Card.Text>
+                                    <Card.Text>
+                                        <Image src={ads?.seller?.pic?.url} fluid responsive
+                                            style={{ width: '4em', height: '4em', borderRadius: '2em' }}
+                                        />
+                                        {' '}
+                                        <b>{ads?.seller?.name}</b>
                                     <Link to={`/chat/${ads?.seller?._id}`} >
-                                        Chat With Seller
+                                        <Button variant="primary" className='ml-5'>Chat With Seller</Button>
                                     </Link>
-                        </Card.Body>
-                    </Card>
-                </Col>
-            </Row>
-            </>)}
+                                    </Card.Text>
+                                    
+                                </Card.Body>
+                            </Card>
+                        </Col>
+                    </Row>
+                </>)}
         </Container>
     )
 }

@@ -23,11 +23,11 @@ const SingleAd = ({ ad }) => {
         <Container>
             <Row>
                 <Col>
-                    <Card className='mt-4' style={{ width: '18rem' }}>
+                    <Card className='mt-4 mx-auto adCard' style={{width:'17rem' }}>
                         <Card.Img variant="top" src={ad.image[0]} style={{ width: '100%', height: '25vh' }} />
                         <Card.Body>
                             <Card.Title style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                <>{ad.title}</>
+                                <> {ad.title.length > 12 ? (ad.title.substr(0, 12)+"...") : ad.title}</>
                                 {(ad.seller._id === userInfo._id) &&
                                     (<div className="icons">
                                         <Link to={`updatead/${ad._id}`}><AiFillEdit /></Link>
@@ -37,18 +37,28 @@ const SingleAd = ({ ad }) => {
                             </Card.Title>
                             <Card.Subtitle className="mb-2 font-weight-bold">₹{ad.price}</Card.Subtitle>
                             <Card.Text>
-                                {ad.description.length > 25 ? ad.description.substr(0, 25) : ad.description}
+                                {ad.description.length > 25 ? (ad.description.substr(0, 25)+"...") : ad.description}
                             </Card.Text>
-                            {ad?.buyer ?
-                                (
-                                    <Button variant="outline-success" disabled>Sold to - {ad?.buyer?.name}</Button>
-                                ) :
-                                (<Link to={`ad/${ad._id}`}><Button variant="danger">
-                                    {(ad?.seller?._id === userInfo._id) ? "View" : "Buy"}
-                                </Button></Link>)
-                            }
-
+                            <div style={{ display: 'flex', justifyContent: 'space-between',alignItems:'center' }}>
+                                <footer className="blockquote-footer">
+                                    Created On- <cite title="Source Title">
+                                        {new Date(ad?.updatedAt).toLocaleString()}</cite>
+                                </footer>
+                                {ad?.buyer?
+                                    (
+                                        <Button variant="outline-success" disabled size='sm'>Sold to - {ad?.buyer?.name}</Button>
+                                    ) :
+                                    (<Link to={`ad/${ad._id}`}><Button variant="danger">
+                                        {/* {(ad?.seller?._id === userInfo._id) ? "View" : "Buy"} */}
+                                        View
+                                    </Button></Link>)
+                                }
+                            </div>
                         </Card.Body>
+                            {/* <footer className="blockquote-footer" style={{display:'flex',justifyContent:'flex-end'}}>
+                                Created On- <cite title="Source Title">
+                                {new Date(ad?.createdAt).toLocaleString()}</cite>
+                            </footer> */}
                     </Card>
                 </Col>
             </Row>

@@ -82,6 +82,33 @@ export const myAds = () => async (dispatch, getState) => {
         });
     }
 }
+export const myBuys = () => async (dispatch, getState) => {
+    try {
+        dispatch({ type: AD_LIST_REQUEST });
+        //taking out userinfo from userLogin state
+        const {
+            userLogin: { userInfo }
+        } = getState();
+
+        const config = {
+            headers: {
+                Authorization: `Bearer ${userInfo.token}`,
+            },
+        };
+        const { data } = await axios.get('/api/ads/mybuys', config);
+        dispatch({ type: AD_LIST_SUCCESS, payload: data })
+        // console.log(data);
+    } catch (error) {
+        const message =
+            error.response && error.response.data.message
+                ? error.response.data.message
+                : error.message;
+        dispatch({
+            type: AD_LIST_FAIL,
+            payload: message,
+        });
+    }
+}
 export const deleteAd = (id) => async (dispatch, getState) => {
     try {
         dispatch({ type: AD_DELETE_REQUEST });

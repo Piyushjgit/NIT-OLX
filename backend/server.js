@@ -8,6 +8,7 @@ const chatRoutes = require('./routes/chatRoutes');
 // const messageRoutes = require('./routes/messageRoutes');
 const { notFound, errorHandler } = require('./middlewares/errorMiddleware');
 const app = express();//object of the imported package
+const path=require('path');
 dotenv.config();
 connectDB();
 
@@ -26,9 +27,21 @@ app.get("/", (req, res) => {
 app.use('/api/users', userRoutes);
 app.use('/api/ads', adRoutes);
 app.use('/api/chat', chatRoutes)
-// app.use('/api/notes',noteRoutes);
-// app.use('/api/chat', chatRoutes);
-// app.use('/api/message', messageRoutes);
+
+const __dirname = path.resolve();
+
+if (process.env.NODE_ENV === "production") {
+    app.use(express.static(path.join(__dirname, "/frontend/build")));
+
+    app.get("*", (req, res) =>
+        res.sendFile(path.resolve(__dirname, "frontend", "build", "index.html"))
+    );
+} else {
+    app.get("/", (req, res) => {
+        res.send("API is running..");
+    });
+}
+
 app.use(notFound);
 app.use(errorHandler);
 
