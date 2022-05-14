@@ -78,13 +78,7 @@ io.on('connection', (socket) => {
     //     socket.leave(data._id);
     // })
 })
-
-
-
-
-
-
-server.listen(5000, () => {
+server.listen(PORT, () => {
     console.log("Connected")
 })
 
