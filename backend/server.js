@@ -16,10 +16,6 @@ const cors = require('cors')
 app.use(cors())
 
 app.use(express.json());
-app.get("/", (req, res) => {
-    res.send("API running...");
-})
-
 /*MiddleWares */
 // // app.use(path, middleware) is used to call middleware function that needs to be called before the route is hit for the corresponding path.
 // Middleware functions are functions that have access to the request object(req), the response object(res), and the next middleware function in the application’s request - response cycle. 
