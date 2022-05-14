@@ -29,13 +29,6 @@ app.use('/api/ads', adRoutes);
 app.use('/api/chat', chatRoutes)
 
 __dirname = path.resolve();
-console.log("------------------------------------------------");
-console.log("------------------------------------------------");
-console.log("------------------------------------------------");
-console.log(process.env.NODE_ENV);
-console.log("------------------------------------------------");
-console.log("------------------------------------------------");
-console.log("------------------------------------------------");
 if (process.env.NODE_ENV === "production") {
     app.use(express.static(path.join(__dirname, "/frontend/build")));
     app.get("*", (req, res) =>
@@ -50,6 +43,7 @@ app.use(notFound);
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
+const host = '0.0.0.0';
 const http = require('http')
 const { Server } = require('socket.io')
 
@@ -83,7 +77,7 @@ io.on('connection', (socket) => {
     //     socket.leave(data._id);
     // })
 })
-server.listen(PORT, () => {
+server.listen(PORT, host, () => {
     console.log("Connected")
 })
 
