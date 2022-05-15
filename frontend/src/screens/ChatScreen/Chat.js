@@ -14,13 +14,11 @@ function Chat({ socket, username, room, messages, receiver }) {
     const [sock, setSock] = useState();
     useEffect(() => {
         setMessageList(messages);
-    }, [messages]);
-    useEffect(() => {
         sock?.on("receive_message", (data) => {
             let temp2 = JSON.stringify(data)
             setMessageList((list) => [...list, temp2]);
         });
-    });
+    }, [messages]);
     useEffect(() => {
         setSock(socket);
         // console.log(sock);
