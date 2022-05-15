@@ -58,10 +58,10 @@ function LoginScreen2({ history }) {
         pauseOnHover
       />
       <div className="container2">
-        {error ? toast.error(`Invalid Email or Password`) : ('')}
         <div className="forms-container2">
           <div className="signin-signup2">
             <form className="sign-in-form2">
+              {error ? (<ErrorMessage children="Invalid Id or Password" variant="danger"/>) : ('')}
               {loading && <Loading />}
               <h2 className="title2">NIT-OLX - Sign In</h2>
               <div className="input-field2">
