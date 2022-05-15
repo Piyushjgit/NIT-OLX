@@ -11,7 +11,7 @@ import Loading from '../../components/Loading';
 //To connect client to serve
 let socket = ""
 function temp() {
-    socket = io.connect("http://127.0.0.1:5000")
+    socket = io.connect("https://nit-olx.herokuapp.com/");
 }
 function ChatScreen({ match }) {
     const dispatch = useDispatch();

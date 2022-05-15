@@ -12,7 +12,7 @@ function Chat({ socket, username, room, messages, receiver }) {
     const [currentMessage, setCurrentMessage] = useState();
     const [messageList, setMessageList] = useState();
     const [sock, setSock] = useState();
-    
+
 
     // console.log(Array.isArray((messages)));
     // console.log(Array.isArray((messageList)));

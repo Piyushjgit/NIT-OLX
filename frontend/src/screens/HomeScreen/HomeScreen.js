@@ -95,12 +95,12 @@ const HomeScreen = ({ search }) => {
                     const msg = message?.substring(in2 + 10, in3 - 3);
                     return (
                         <>
-                        <a href={`/chat/${user}`}>
-                            <h5>
-                                {(author === userInfo?.name) ? ('You') : (author)}{': '}{msg.length > 15 ? (msg?.substr(0, 15) + " ...") : (msg)}
-                            </h5>
-                        </a>
-                        <hr/>
+                            <a href={`/chat/${user}`}>
+                                <h5>
+                                    {(author === userInfo?.name) ? ('You') : (author)}{': '}{msg.length > 15 ? (msg?.substr(0, 15) + " ...") : (msg)}
+                                </h5>
+                            </a>
+                            <hr />
                         </>
                     );
                 })}
@@ -111,8 +111,8 @@ const HomeScreen = ({ search }) => {
 
     return (
         <Container className='mt-4'>
-            <OverlayTrigger trigger="click" rootClose placement="top" overlay={popover}>
-                <Button variant="success" style={{ position: 'fixed', right: '1em', top: '40em',zIndex:'20' }}>Chats</Button>
+            <OverlayTrigger trigger="click" rootClose placement="left" overlay={popover}>
+                <Button variant="success" style={{ position: 'fixed', right: '1em', top: '40em', zIndex: '20' }}>Chats</Button>
             </OverlayTrigger>
             <Link to='/createad'>
                 <Button className='ml-3'>
