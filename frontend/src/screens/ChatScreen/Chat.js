@@ -12,13 +12,7 @@ function Chat({ socket, username, room, messages, receiver }) {
     const [currentMessage, setCurrentMessage] = useState();
     const [messageList, setMessageList] = useState();
     const [sock, setSock] = useState();
-
-
-    // console.log(Array.isArray((messages)));
-    // console.log(Array.isArray((messageList)));
-    // console.log(messageList);
-    // console.log(currentMessage);
-    // console.log(socket);
+    const [send, setSend] = useState(false);
     useEffect(() => {
         setMessageList(messages);
         sock?.on("receive_message", (data) => {
@@ -38,7 +32,17 @@ function Chat({ socket, username, room, messages, receiver }) {
         // console.log(chat_update);
     }
     useEffect(() => {
+        if(send===true)
+        {
+            sock?.on("receive_message", (data) => {
+                let temp2 = JSON.stringify(data)
+                setMessageList((list) => [...list, temp2]);
+            });
+        }
+    }, [send])
+    useEffect(() => {
         updateHandler();
+        setSend(true);
         setCurrentMessage("");
     }, [messageList])
     const sendMessage = async () => {
