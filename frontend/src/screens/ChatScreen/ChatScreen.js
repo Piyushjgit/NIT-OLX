@@ -56,7 +56,7 @@ function ChatScreen({ match }) {
         {
             dispatch(fetchChat(match?.params.id));
         }
-    }, [dispatch,userInfo, history]);
+    }, [dispatch,userInfo,history]);
     useEffect(() => {
         socket?.emit("join_room", chatInfo?.room_id);
     }, [chatInfo?.room_id])
