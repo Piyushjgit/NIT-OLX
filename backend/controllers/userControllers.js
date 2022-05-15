@@ -206,7 +206,7 @@ const resetPassword = asyncHandler(async (req, res) => {
         from: "no-reply@nitkkr-olx",
         subject: "Password Reset Link @NIT-KKR OLX",
         html: `Click on this link to reset password - <br> 
-            <a href="http://localhost:3000/reset-password/${token}">Click Here</a>`
+            <a href="https://nit-olx.herokuapp.com/reset-password/${token}">Click Here</a>`
     }, (err) => {
         if (err) {
             console.log(err);

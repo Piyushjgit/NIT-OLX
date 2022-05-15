@@ -4,10 +4,10 @@ import { Row, Col, Form, Button, Image } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux';
 import ErrorMessage from '../../components/ErrorMessage';
 import Loading from "../../components/Loading";
-import { userProfile,  deleteUser } from '../../actions/userActions';
+import { userProfile, deleteUser } from '../../actions/userActions';
 import "./ProfileScreen.css";
 
-const ProfileScreen = ({location, history}) => {
+const ProfileScreen = ({ location, history }) => {
     const dispatch = useDispatch();
     const userLogin = useSelector((state) => state.userLogin);
     const { userInfo } = userLogin;
@@ -22,7 +22,7 @@ const ProfileScreen = ({location, history}) => {
     const { loading, error, success } = userUpdate;
 
     const userDelete = useSelector((state) => state.userDelete);
-    const { loading:loadingDelete, error:errorDelete, success:successDelete } = userDelete;
+    const { loading: loadingDelete, error: errorDelete, success: successDelete } = userDelete;
     useEffect(() => {
         if (!userInfo) {
             history.push("/");
@@ -59,15 +59,13 @@ const ProfileScreen = ({location, history}) => {
         if (password !== confirmPassword) {
             setPasswordError("Password Dont Match");
         }
-        else
-        {
+        else {
             setPasswordError('');
-            dispatch(userProfile({ name, password, pic }));
+            dispatch(userProfile({ name, password }));
         }
     };
     const handleDelete = () => {
-        if(window.confirm("Delete Account Permanently ?"))
-        {
+        if (window.confirm("Delete Account Permanently ?")) {
             dispatch(deleteUser());
             // history.push('/');
         }
@@ -121,7 +119,7 @@ const ProfileScreen = ({location, history}) => {
                             </Button>
                         </Form>
                     </Col>
-                    <Col style={{ display: 'flex',flexDirection:'column', justifyContent: 'center', 'alignItems': 'center' }}>
+                    <Col style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', 'alignItems': 'center' }}>
                         <img src={pic} alt={name} className='profilePic' />
                         {/* <Image src={pic} fluid rounded responsive /> */}
                         {/* <Button type="delete" varient="primary" onClick={handleDelete}>
