@@ -192,13 +192,10 @@ const resetPassword = asyncHandler(async (req, res) => {
         token = buffer.toString("hex");
     })
     const user = await User.findOne({ email: req.body.email });
-    if (!user)
-    {
-     return res.status(404).json("User dont Exist with this email" );
+    if (!user) {
+        return res.status(404).json("User dont Exist with this email");
     }
     user.resetToken = token;
-    // console.log(token);
-    // console.log(user.resetToken);
     user.expireToken = Date.now() + 3600000;
     await user.save();
     const data = transporter.sendMail({
@@ -234,7 +231,7 @@ const setNewPassword = asyncHandler(async (req, res) => {
 
 });
 const contactUs = asyncHandler(async (req, res) => {
-    const {name,contact,message}=req.body;
+    const { name, contact, message } = req.body;
     const data = transporter.sendMail({
         to: "piyush_11913097@nitkkr.ac.in",
         from: "no-reply@nitkkr-olx",
