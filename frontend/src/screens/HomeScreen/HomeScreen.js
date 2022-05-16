@@ -97,7 +97,7 @@ const HomeScreen = ({ search }) => {
                         <>
                             <a href={`/chat/${user}`}>
                                 <h5>
-                                    {(author === userInfo?.name) ? ('You') : (author)}{': '}{msg.length > 15 ? (msg?.substr(0, 15) + " ...") : (msg)}
+                                    {(author === userInfo?.name) ? ('You') : (author)}{': '}{msg?.length > 15 ? (msg?.substr(0, 15) + " ...") : (msg)}
                                 </h5>
                             </a>
                             <hr />
