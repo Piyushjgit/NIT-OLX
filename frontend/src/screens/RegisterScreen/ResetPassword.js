@@ -109,12 +109,13 @@ const ResetPassword = ({ history }) => {
             ) : (
                     <>
                         {message && <ErrorMessage variant='danger'>{message}</ErrorMessage>}
-                        <Container style={{display:'flex',justifyContent:'center', alignItems:'center',height:'80vh'}}>
+                        <Container style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '80vh' }}>
                             <Row>
                                 <Col style={{
-                                    display: 'flex',flexDirection:'column', justifyContent: 'center', alignItems: 'center'}}>
+                                    display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'
+                                }}>
                                     <h1>Password Changed Successfully, Login Again</h1>
-                                    <Link to='/login'>
+                                    <Link to='/login2'>
                                         <Button variant="primary" type="submit">
                                             Login Here
                                         </Button>
