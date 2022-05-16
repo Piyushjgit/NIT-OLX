@@ -56,8 +56,6 @@ const io = new Server(server, {
     },
 })
 io.on('connection', (socket) => {
-    // console.log(socket.id)
-    //To join to the specific room based on frontend
     socket.on("join_room", (data) => {
         socket.join(data)
         console.log(`User with ID:${socket.id} joined room ${data}`)
