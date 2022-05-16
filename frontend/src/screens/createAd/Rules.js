@@ -1,28 +1,17 @@
 const Rules = [
-    "Rule - 1"
+    "Write an attractive and short title"
     ,
-    "Rule - 1"
+    "Write clear description in about 3-4 lines and use '.' at end of each line"
     ,
-    "Rule - 1"
+    "Give a valid price to your product"
     ,
-    "Rule - 1"
+    "Please add clear and multiple images"
     ,
-    "Rule - 1"
+    "Wait for the images to load (By checking the progress par above the submit button)"
     ,
-    "Rule - 1"
+    "Ads can be edited and deleted"
     ,
-    "Rule - 1"
-    ,
-    "Rule - 1"
-    ,
-    "Rule - 1"
-    ,
-    "Rule - 1"
-    ,
-    "Rule - 1"
-    ,
-    "Rule - 1"
-    ,
+    "Once added you can check the ads in My Ads Section on the home screen"
 ]
 
 export default Rules

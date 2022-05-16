@@ -27,6 +27,7 @@ const Footer = () => {
         >
             <Container>
                 <Row>
+                    <Col className='text-center py-2 contactUs'><Link to="/contactus">User Manual</Link></Col>
                     <Col className="text-center py-2">
                         Copyright &copy; NIT-OLX, 2022. All rights reserved.
                     </Col>

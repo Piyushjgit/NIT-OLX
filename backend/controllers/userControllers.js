@@ -47,17 +47,6 @@ const registerUser = asyncHandler(async (req, res) => {
         pic
     });
     if (user) {
-        transporter.sendMail({
-            from: "no-reply@nitkkr-olx",
-            to: user.email,
-            subject: "Sign-Up Successfull @NIT-KKR OLX",
-            html: "<h1>Welcome to NIT-KKR OLX</h1>"
-        }, (err) => {
-            if (err) {
-                console.log(err);
-                throw err;
-            }
-        })
         res.status(201).json(
             {
                 _id: user._id,
