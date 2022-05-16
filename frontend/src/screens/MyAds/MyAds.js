@@ -26,6 +26,7 @@ const MyAds = () => {
             });
             toast.success("All Sold Ads Deleted Successfully");
             dispatch(myAds());
+            history.push('/home');
         }
     }
     const [key, setKey] = useState('sold');

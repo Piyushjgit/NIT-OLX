@@ -27,7 +27,7 @@ const Footer = () => {
         >
             <Container>
                 <Row>
-                    <Col className='text-center py-2 contactUs'><Link to="/contactus">User Manual</Link></Col>
+                    <Col className='text-center py-2 contactUs'><a href="https://www.veed.io/view/45ce7486-5c51-4d90-b13c-5bbda423a440?sharing" target="_blank">User Manual</a></Col>
                     <Col className="text-center py-2">
                         Copyright &copy; NIT-OLX, 2022. All rights reserved.
                     </Col>

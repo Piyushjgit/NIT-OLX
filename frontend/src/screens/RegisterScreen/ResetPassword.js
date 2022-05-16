@@ -79,31 +79,18 @@ const ResetPassword = ({ history }) => {
                             <div className="content2">
                                 <h3>New here ?</h3>
                                 <p>
-                                    Lorem ipsum, dolor sit amet consectetur adipisicing elit. Debitis,
-                                    ex ratione. Aliquid!
+                                    Welcome to NIT-OLX &nbsp; Please <bold> Sign Up </bold> to buy and sell products
                 </p>
                                 <button className="btn2 transparent2" id="sign-up-btn">
-                                    Sign up
-                </button>
+                                    <Link to="/register2">
+                                        Sign up
+              </Link>
+                                </button>
                             </div>
                             <img src={pic1} className="image2" alt="" />
                         </div>
-                        <div className="panel2 right-panel2">
-                            <div className="content2">
-                                <h3>One of us ?</h3>
-                                <p>
-                                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Nostrum
-                                    laboriosam ad deleniti.
-                </p>
-                                <button className="btn2 transparent2" id="sign-in-btn">
-                                    Sign in
-                </button>
-                            </div>
-                            <img src={pic2} className="image2" alt="" />
-                        </div>
                     </div>
                 </div>
-
 
 
             ) : (
@@ -127,7 +114,7 @@ const ResetPassword = ({ history }) => {
                 )
             }
         </>
-    )
+            )
 }
 
 export default ResetPassword
