@@ -45,7 +45,7 @@ const AdScreen = ({ match }) => {
             dispatch(currentAd(match.params.id));
         }
     }, [dispatch, userInfo, history]);
-    
+
     const chatHandler = (e) => {
         e.preventDefault();
         window.open(`${url}9771139594`);
@@ -126,8 +126,8 @@ const AdScreen = ({ match }) => {
                                                     <img
                                                         src={pic}
                                                         alt={i}
-                                                        style={{maxWidth:'100%',height:'60vh'}}
-                                                    />            
+                                                        style={{ maxWidth: '100%', height: '60vh' }}
+                                                    />
                                                     <Carousel.Caption>
                                                         <h3>{ads?.price + i}</h3>
                                                         <p>{ads?.title}</p>
@@ -140,16 +140,16 @@ const AdScreen = ({ match }) => {
                                     <Card.Title style={{ display: 'flex', justifyContent: 'space-between' }}>
                                         <strong><h2>{ads?.title}</h2></strong>
                                     </Card.Title>
-                                    <hr/>
-                                    <h3 style={{textDecoration:'underline'}}>Description</h3>
+                                    <hr />
+                                    <h3 style={{ textDecoration: 'underline' }}>Description</h3>
                                     <Card.Text>
-                                    {
-                                        desc?.map((des)=>(
+                                        {
+                                            desc?.map((des) => (
                                                 <div>{des}</div>
-                                        ))      
-                                    }
+                                            ))
+                                        }
                                     </Card.Text>
-                                    <hr/>
+                                    <hr />
                                     {
                                         (ads?.seller?._id === userInfo._id && ads?.buyer === null) &&
                                         (<>
@@ -211,11 +211,13 @@ const AdScreen = ({ match }) => {
                                         />
                                         {' '}
                                         <b>{ads?.seller?.name}</b>
-                                        <Link to={`/chat/${ads?.seller?._id}/${ads?._id}`} >
-                                        <Button variant="primary" className='ml-5'>Chat With Seller</Button>
-                                    </Link>
+                                        {ads?.seller?._id === userInfo?._id ?" --- This is your own ad" :
+                                            <Link to={`/chat/${ads?.seller?._id}/${ads?._id}`} >
+                                                <Button variant="primary" className='ml-5'>Chat With Seller</Button>
+                                            </Link>
+                                        }
                                     </Card.Text>
-                                    
+
                                 </Card.Body>
                             </Card>
                         </Col>
