@@ -27,7 +27,6 @@ const ContactUs = () => {
             const config = {
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `Bearer ${userInfo?.token}`,
                 },
             };
             const { data } = await axios.post(`/api/users/contact`, {name,contact,message}, config);

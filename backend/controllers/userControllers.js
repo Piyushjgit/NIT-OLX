@@ -6,22 +6,32 @@ const cloudinary = require("../utlis/cloudinary");
 const nodemailer = require('nodemailer');
 const sendgridTransport = require('nodemailer-sendgrid-transport');
 const crypto = require('crypto');
+const {google}=require('googleapis')
 // const transporter = nodemailer.createTransport(sendgridTransport({
 //     auth: {
 //         api_key: "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"
 //         //Go here: Setting -> Sender Authentication -> Single Sender Verification -> Verify an Address
 //     }
 // }));
-const transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-        user: process.env.USER_ID,
-        pass: process.env.USER_PASS,
-    },
-    tls: {
-        rejectUnauthorized: false
-    }
-});
+const CLIENT_ID =process.env.CLIENT_ID
+const CLIENT_SECRET = process.env.CLIENT_SECRET
+const REFRESH_TOKEN = process.env.REFRESH_TOKEN
+const REDIRECT_URI ="https://developers.google.com/oauthplayground"
+const USER_ID=process.env.USER_ID
+
+const oAuth2Client=new google.auth.OAuth2(CLIENT_ID,CLIENT_SECRET,REDIRECT_URI);
+oAuth2Client.setCredentials({ refresh_token: REFRESH_TOKEN});
+
+// const transporter = nodemailer.createTransport({
+//     service: "gmail",
+//     auth: {
+//         user: process.env.USER_ID,
+//         pass: process.env.USER_PASS,
+//     },
+//     tls: {
+//         rejectUnauthorized: false
+//     }
+// });
 // const transporter = nodemailer.createTransport({
 //     host: 'smtp.gmail.com',
 //     port: 587,
@@ -47,6 +57,31 @@ const registerUser = asyncHandler(async (req, res) => {
         pic
     });
     if (user) {
+        const accessToken = await oAuth2Client.getAccessToken();
+        const transporter = nodemailer.createTransport({
+            service: "gmail",
+            auth: {
+                type: 'OAuth2',
+                user: USER_ID,
+                clientId: CLIENT_ID,
+                clientSecret: CLIENT_SECRET,
+                refreshToken: REFRESH_TOKEN,
+                accessToken: accessToken,
+            }
+        });
+        const data = transporter.sendMail({
+            to: user.email,
+            from: "no-reply@nitkkr-olx",
+            subject: "Welcome to NIT-OLX",
+            html: `You have successfully registered on our website - <br> 
+            Please go through this user manual
+            <a href="https://www.veed.io/view/45ce7486-5c51-4d90-b13c-5bbda423a440?sharing" target="_blank">User Manual</a>`
+        }, (err) => {
+            if (err) {
+                console.log(err);
+                throw err;
+            }
+        });
         res.status(201).json(
             {
                 _id: user._id,
@@ -173,6 +208,32 @@ const resetPassword = asyncHandler(async (req, res) => {
     user.resetToken = token;
     user.expireToken = Date.now() + 3600000;
     await user.save();
+    // const data = transporter.sendMail({
+    //     to: user.email,
+    //     from: "no-reply@nitkkr-olx",
+    //     subject: "Password Reset Link @NIT-KKR OLX",
+    //     html: `Click on this link to reset password - <br> 
+    //         <a href="https://nit-olx.herokuapp.com/reset-password/${token}">Click Here</a>`
+    // }, (err) => {
+    //     if (err) {
+    //         console.log(err);
+    //         throw err;
+    //     }
+    // });
+    // console.log(data);
+    // res.status(200).json({ message: "Check your Email for password Reset Link" });
+    const accessToken = await oAuth2Client.getAccessToken();
+    const transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+            type: 'OAuth2',
+            user: USER_ID,
+            clientId: CLIENT_ID,
+            clientSecret: CLIENT_SECRET,
+            refreshToken: REFRESH_TOKEN,
+            accessToken: accessToken,
+        }
+    });
     const data = transporter.sendMail({
         to: user.email,
         from: "no-reply@nitkkr-olx",
@@ -187,7 +248,6 @@ const resetPassword = asyncHandler(async (req, res) => {
     });
     console.log(data);
     res.status(200).json({ message: "Check your Email for password Reset Link" });
-
 });
 const setNewPassword = asyncHandler(async (req, res) => {
     const { password, token } = req.body;
@@ -207,11 +267,23 @@ const setNewPassword = asyncHandler(async (req, res) => {
 });
 const contactUs = asyncHandler(async (req, res) => {
     const { name, contact, message } = req.body;
+    const accessToken = await oAuth2Client.getAccessToken();
+    const transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+            type: 'OAuth2',
+            user: USER_ID,
+            clientId: CLIENT_ID,
+            clientSecret: CLIENT_SECRET,
+            refreshToken: REFRESH_TOKEN,
+            accessToken: accessToken,
+        }
+    });
     const data = transporter.sendMail({
         to: "piyush_11913097@nitkkr.ac.in",
         from: "no-reply@nitkkr-olx",
         subject: "Contact Us Form Message @NIT-OLX",
-        html: `${name} <br>  ${contact} <br> ${req.user.email} <br>
+        html: `${name} <br>  ${contact} <br> <br>
             <h3>${message}</h3>`
     }, (err) => {
         if (err) {
@@ -220,6 +292,5 @@ const contactUs = asyncHandler(async (req, res) => {
         }
     });
     res.status(200).json({ message: "Message Sent Successfully" });
-
 });
 module.exports = { registerUser, authUser, updateProfile, deleteUser, getUser, resetPassword, setNewPassword, contactUs };

@@ -23,8 +23,8 @@ const SingleAd = ({ ad }) => {
         <Container>
             <Row>
                 <Col>
-                    <Card className='mt-4 mx-auto adCard' style={{width:'17rem' }}>
-                        <Card.Img variant="top" src={ad.image[0]} style={{ width: '100%', height: '25vh' }} />
+                    <Card className='mt-4 mx-auto adCard' style={{width:'18rem'}}>
+                        <Card.Img variant="top" src={ad.image[0]} style={{ width: '100%',maxHeight:'25vh' }} />
                         <Card.Body>
                             <Card.Title style={{ display: 'flex', justifyContent: 'space-between' }}>
                                 <> {ad.title.length > 12 ? (ad.title.substr(0, 12)+"...") : ad.title}</>

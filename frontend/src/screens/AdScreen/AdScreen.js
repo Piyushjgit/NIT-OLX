@@ -104,27 +104,6 @@ const AdScreen = ({ match }) => {
     }
     return (
         <Container className='mt-5'>
-            {/* <NotificationBadge
-                count={notification?.length}
-                effect={Effect.SCALE}
-            />
-            <NavDropdown title={'Bell'} id="basic-nav-dropdown">
-                {
-                    !(notification?.length) && <NavDropdown.Item>No New Messages</NavDropdown.Item>
-                }
-                {
-                    notification?.map((noti) => (
-                        <NavDropdown.Item key={noti._id}
-                            onClick={() => {
-                                setNotification(notification?.filter((n) => n != noti));
-                                history.push(`/ad/${noti._id}`);
-                            }}
-                        >
-                            {`New Buy Request for ${noti.title}`}</NavDropdown.Item>
-                    ))
-                }
-                <NavDropdown.Divider />
-            </NavDropdown> */}
             <ToastContainer
                 position="top-center"
                 autoClose={2000}
@@ -232,7 +211,7 @@ const AdScreen = ({ match }) => {
                                         />
                                         {' '}
                                         <b>{ads?.seller?.name}</b>
-                                    <Link to={`/chat/${ads?.seller?._id}`} >
+                                        <Link to={`/chat/${ads?.seller?._id}/${ads?._id}`} >
                                         <Button variant="primary" className='ml-5'>Chat With Seller</Button>
                                     </Link>
                                     </Card.Text>

@@ -8,7 +8,7 @@ import { AiFillCloseCircle, AiOutlineSend } from "react-icons/ai";
 import { Link } from "react-router-dom";
 import { Image, Button, Popover, OverlayTrigger } from "react-bootstrap";
 
-function Chat({ socket, username, room, messages, receiver }) {
+function Chat({ socket, sender, room, messages, receiver, adId }) {
     const [currentMessage, setCurrentMessage] = useState();
     const [messageList, setMessageList] = useState();
     const [sock, setSock] = useState();
@@ -42,7 +42,7 @@ function Chat({ socket, username, room, messages, receiver }) {
             if (currentMessage !== "") {
                 const messageData = {
                     room: room,
-                    author: username,
+                    author: sender?._id,
                     message: currentMessage,
                     time:
                         new Date(Date.now()).toLocaleString()
@@ -95,16 +95,16 @@ function Chat({ socket, username, room, messages, receiver }) {
 
         <div className="chatPage">
             <div className="chatContainer">
+                <Button href={`/ad/${adId}`} target="_blank" size='sm'>Ad Link</Button>
                 <div className="header">
                     <h2>NIT-OLX CHAT</h2>
                     <Button onClick={getLocation} size='sm'>Location</Button>
                     <h2>
-                        {console.log(receiver?.image)}
                         <Image src={receiver?.image} fluid responsive
                             style={{ width: '1.5em', height: '1.5em', borderRadius: '2em', marginRight: '-0.2rem' }}
                         />
                         {' '}
-                        {receiver?.name}
+                        {receiver?.name?.split(' ')[0]}
                     </h2>
 
                 </div>
@@ -112,7 +112,7 @@ function Chat({ socket, username, room, messages, receiver }) {
                     {messageList?.map((msg) => {
                         let messageContent = JSON.parse(msg);
                         return (
-                            <Message user={username === messageContent.author ? '' : messageContent.author} message={messageContent.message} time={messageContent.time} classs={username === messageContent.author ? 'right' : 'left'} />
+                            <Message user={sender?._id === messageContent.author ? '' : sender?.name} message={messageContent.message} time={messageContent.time} classs={sender?._id === messageContent.author ? 'right' : 'left'} />
                         );
                     })}
                 </ReactScrollToBottom>

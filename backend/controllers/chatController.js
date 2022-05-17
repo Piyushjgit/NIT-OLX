@@ -3,18 +3,16 @@ const User = require('../models/userModel');
 const asyncHandler = require('express-async-handler');
 
 const accessChat = asyncHandler(async (req, res) => {
-    // const { sellerId, receiverId } = req.body;
-    const sellerId=req.params.id;
+    const sellerId=req.params.uid;
     const receiverId=req.user._id;
-    // console.log(sellerId);
+    const adId=req.params.aid;
     let room_alloted = ""
     if (sellerId > receiverId) {
-        room_alloted = sellerId + " " + receiverId
+        room_alloted = sellerId + " " + receiverId + " " + adId
     }
     else {
-        room_alloted = receiverId + " " + sellerId
+        room_alloted = receiverId + " " + sellerId + " " + adId
     }
-    // console.log('Room Alloted is:-', room_alloted)
 
     const room_given = await Chat.findOne({ room_id: room_alloted })
     if (room_given) {
@@ -40,12 +38,11 @@ const accessChat = asyncHandler(async (req, res) => {
 
 const updateChat = asyncHandler(async (req, res) => {
     const { room_id, messages } = req.body
-    // console.log(req.body);
     const available = await Chat.findOne({ room_id });
     if (available) {
         // available.room_id = room_id || available.room_id;
         available.messages = messages || available.messages;
-        console.log('Room-id:', available)
+        // console.log('Room-id:', available)
         const updatedChat = await available.save();
         res.json({
             room_id: updatedChat.room_id,

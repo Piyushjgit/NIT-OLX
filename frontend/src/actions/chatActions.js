@@ -1,7 +1,7 @@
 import { FETCH_CHAT_REQUEST, FETCH_CHAT_SUCCESS, FETCH_CHAT_FAIL, FETCH_LOGOUT } from '../constants/chatConstants'
 import axios from 'axios'
 
-export const fetchChat = (sellerId) => async (dispatch,getState) => {
+export const fetchChat = (aid,uid) => async (dispatch,getState) => {
     try {
         dispatch({ type: FETCH_CHAT_REQUEST })
         const {
@@ -13,7 +13,7 @@ export const fetchChat = (sellerId) => async (dispatch,getState) => {
                 Authorization: `Bearer ${userInfo.token}`,
             },
         };
-        const { data } = await axios.post(`/api/chat/${sellerId}`, {}, config);
+        const { data } = await axios.post(`/api/chat/${aid}/${uid}`, {}, config);
         dispatch({ type: FETCH_CHAT_SUCCESS, payload: data })
         // console.log(data);
         localStorage.setItem('chatInfo', JSON.stringify(data));

@@ -52,33 +52,33 @@ function App() {
     <BrowserRouter>
 
       {userInfo && <Header setSearch={setSearch} />}
-      <div style={{ height: '100hv', marginBottom: '6rem'}}>
-      <Switch>
-        <Route path='/' component={LoginScreen2} exact />
-        <Route path='/login' component={LoginScreen} />
-        <Route path='/login2' component={LoginScreen2} />
-        <Route path='/register2' component={RegisterScreen2} />
-        <Route path='/register' component={RegisterScreen} />
-        <Route path='/myads' component={MyAds} />
-        <Route path='/myBuys' component={MyBuys} />
-        <Route path='/createad' component={CreateAd} />
-        <Route path='/contactus' component={ContactUs} />
-        <Route path='/ad/:id' component={AdScreen} />
-        <Route
-          path="/home"
-          component={({ history }) => (
-            <HomeScreen search={search} history={history} />
-          )}
-        />
-        <Route path='/updatead/:id' component={UpdateAd} />
-        <Route path='/profile' component={ProfileScreen} />
-        <Route path='/reset' component={ResetPage} exact />
-        <Route path='/reset-password/:token' component={ResetPassword} />
-        <Route path='/chat/:id' component={ChatScreen} />
-        <Route component={NotFound} />
-      </Switch>
+      <div style={{ height: '100hv', marginBottom: '6rem' }}>
+        <Switch>
+          <Route path='/' component={LoginScreen2} exact />
+          <Route path='/login' component={LoginScreen} />
+          <Route path='/login2' component={LoginScreen2} />
+          <Route path='/register2' component={RegisterScreen2} />
+          <Route path='/register' component={RegisterScreen} />
+          <Route path='/myads' component={MyAds} />
+          <Route path='/myBuys' component={MyBuys} />
+          <Route path='/createad' component={CreateAd} />
+          <Route path='/contactus' component={ContactUs} />
+          <Route path='/ad/:id' component={AdScreen} />
+          <Route
+            path="/home"
+            component={({ history }) => (
+              <HomeScreen search={search} history={history} />
+            )}
+          />
+          <Route path='/updatead/:id' component={UpdateAd} />
+          <Route path='/profile' component={ProfileScreen} />
+          <Route path='/reset' component={ResetPage} exact />
+          <Route path='/reset-password/:token' component={ResetPassword} />
+          <Route path='/chat/:uid/:aid' component={ChatScreen} />
+          <Route component={NotFound} />
+        </Switch>
       </div>
-      <Footer/>
+      <Footer />
     </BrowserRouter>
     //   let token = localStorage.getItem(TOKEN);
     // let decodedToken = jwt_decode(token);

@@ -85,20 +85,22 @@ const HomeScreen = ({ search }) => {
                 {chats?.map((chat) => {
                     const user1 = chat.room_id.split(" ")[0];
                     const user2 = chat.room_id.split(" ")[1];
+                    const corresAd = chat.room_id.split(" ")[2];
                     const user = (userInfo._id === user1 ? user2 : user1);
                     let message = chat?.messages;
                     message = message[message?.length - 1];
                     let in1 = message?.indexOf('author');
                     let in2 = message?.indexOf('message');
                     let in3 = message?.indexOf('time');
-                    const author = message?.substring(in1 + 9, in2 - 3);
+                    {/* const author = message?.substring(in1 + 9, in2 - 3); */}
                     const msg = message?.substring(in2 + 10, in3 - 3);
                     return (
                         <>
-                            <a href={`/chat/${user}`}>
-                                <h5>
-                                    {(author === userInfo?.name) ? ('You') : (author)}{': '}{msg?.length > 15 ? (msg?.substr(0, 15) + " ...") : (msg)}
-                                </h5>
+                            <a href={`/chat/${user}/${corresAd}`}>
+                                <h6>
+                                    <Button href={`/ad/${corresAd}`} target="_blank" size='sm'>Ad Link</Button>
+                                    {msg?.length > 15 ? (msg?.substr(0, 15) + " ...") : (msg)}
+                                </h6>
                             </a>
                             <hr />
                         </>
@@ -115,7 +117,7 @@ const HomeScreen = ({ search }) => {
                 <Button variant="success" style={{ position: 'fixed', right: '1em', top: '40em', zIndex: '20' }}>Chats</Button>
             </OverlayTrigger>
             <Link to='/createad'>
-                <Button className='ml-3'>
+                <Button className='ml-4'>
                     Create Ad
                 </Button>
             </Link>

@@ -43,7 +43,7 @@ const MyAds = () => {
                 // variant="pills"
                 style={{ fontWeight: 800 }}
             >
-                <Tab eventKey="pending" title="Pending" size="lg">
+                <Tab eventKey="pending" title="Requested" size="lg">
                     <Row>
                         {ads?.map((ad) => (
                             (!(ad?.buyer)) && <Col>

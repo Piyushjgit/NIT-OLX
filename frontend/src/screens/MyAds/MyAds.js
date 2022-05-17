@@ -29,7 +29,7 @@ const MyAds = () => {
             history.push('/home');
         }
     }
-    const [key, setKey] = useState('sold');
+    const [key, setKey] = useState('notsold');
     useEffect(() => {
         if (!userInfo) {
             history.push('/');
@@ -57,10 +57,10 @@ const MyAds = () => {
                 // variant="pills"
                 style={{fontWeight:800}}
             >
-                <Tab eventKey="notsold" title="In Process" size="lg">
+                <Tab eventKey="notsold" title="All Ads" size="lg">
                     <Row>
                         {ads?.map((ad) => (
-                            (!(ad?.buyer)) && <Col>
+                            <Col>
                                 <SingleAd ad={ad} key={ad._id} />
                             </Col>
                         ))}
@@ -72,7 +72,7 @@ const MyAds = () => {
                     }
                     <Row>
                         {ads?.map((ad) => (
-                            ((ad?.buyer)) && <Col>
+                            (ad?.buyer) && <Col>
                                 <SingleAd ad={ad} key={ad._id} />
                             </Col>
                         ))}

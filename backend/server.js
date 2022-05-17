@@ -74,37 +74,3 @@ io.on('connection', (socket) => {
 server.listen(PORT, host, () => {
     console.log("Connected")
 })
-
-// const server = app.listen(PORT,
-//     console.log("Server Started")
-// );
-// const io = require('socket.io')(server, {
-//     pingTimeout: 60000,
-//     cors: {
-//         origin: 'http://localhost:3000'
-//     }
-// });
-
-// io.on("connection", (socket) => {
-//     // console.log("socket connected");
-//     // io.emit("firstEvent","Hello All!");
-//     // io.to(socketId).emit("firstEvent", "Hello All!");
-//     socket.on("setup", (userData) => {
-//         socket.join(userData._id);
-//         socket.emit("connected");
-//         // console.log(userData.name);
-//     })
-//     socket.on("new request", (newRequest) => {
-//         var seller = newRequest.seller;
-//         socket.in(seller).emit("request received", newRequest);
-//         // console.log(newRequest);
-//     })
-//     socket.on("disconnect", () => {
-//         console.log("socket disconnected");
-//     })
-//     socket.off("setup", () => {
-//         console.log("User Disconnected");
-//         socket.leave(userData._id);
-//     })
-
-// });

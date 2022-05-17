@@ -4,5 +4,5 @@ const { updateChat, accessChat, userChat } = require('../controllers/chatControl
 const { protect } = require('../middlewares/authMiddleware');
 router.route('/singleChats').post(protect,userChat);
 router.route('/update').put(updateChat);
-router.route('/:id').post(protect,accessChat);
+router.route('/:aid/:uid').post(protect,accessChat);
 module.exports = router;
